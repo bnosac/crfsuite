@@ -1,0 +1,15 @@
+citHeader("To cite crfsuite in publications use:")
+
+citEntry(entry  = "misc",
+  title         = "{crfsuite}: Conditional Random Fields for Labelling Sequential Data in Natural Language Processing based on CRFsuite: a fast implementation of Conditional Random Fields (CRFs)",
+  author        = personList(as.person("Jan Wijffels"), as.person("Naoaki Okazaki")),
+  year          = "2007-2018",
+  url           = "https://github.com/bnosac/crfsuite",
+  organization  = "BNOSAC",
+  note          = "R package version 0.1",
+  textVersion   =  paste("Wijffels, J. and Okazaki, N. (2018)", 
+               "Conditional Random Fields for Labelling Sequential Data in Natural Language Processing based on CRFsuite: a fast implementation of Conditional Random Fields (CRFs)",
+               "https://github.com/bnosac/crfsuite")
+)
+
+
