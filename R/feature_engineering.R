@@ -1,11 +1,15 @@
 #' @title NA friendly version of sprintf
 #' @description Does the same as the function \code{\link[base]{sprintf}} except that if 
-#' in ... NA values are passed, also NA values are returned.
+#' in ... \code{NA} values are passed, also \code{NA} values are returned instead of being replaced by 'NA'.
 #' @param fmt a character vector of format strings, which will be fed on to \code{\link[base]{sprintf}}
-#' @param ... values to be passed into \code{fmt}, which will be passed on to \code{\link[base]{sprintf}}
-#' @return A character vector of length that of the longest input. Same as what \code{\link[base]{sprintf}}.
-#' In case any of the values passed on to \code{...}, the corresponding returned value will be set to NA.
+#' @param ... values to be passed into \code{fmt}, the \code{...} will be passed on to \code{\link[base]{sprintf}}
+#' @return A character vector of length that of the longest input in \code{...}. 
+#' This is the same as what \code{\link[base]{sprintf}} would provide. 
+#' Except, in case any of the values passed on to \code{...} are \code{NA}, 
+#' the corresponding returned value will be set to \code{NA} for that element of the vector. \cr
+#' See the examples to see the difference with \code{\link[base]{sprintf}}
 #' @export
+#' @seealso \code{\link[base]{sprintf}}
 #' @examples 
 #' sprintf("(w-1):%s", c("xyz", NA, "abc"))
 #' sprintf_na("(w-1):%s", c("xyz", NA, "abc"))
@@ -27,3 +31,4 @@ sprintf_na <- function(fmt, ...){
   }
   x
 }
+
