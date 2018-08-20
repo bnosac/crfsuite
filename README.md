@@ -40,6 +40,15 @@ scores <- predict(model,
                   newdata = crf_test[, c("token", "pos")], group = crf_test$doc_id)
 table(scores$label)
 table(scores$label == crf_test$label)
+
+##
+## Get more statistics on how good the model is using the caret package
+##
+library(caret)
+overview <- confusionMatrix(scores$label, crf_test$label, mode = "prec_recall")
+overview$overall
+overview$byClass[, c("Precision", "Recall", "F1")]
+
 ```
 
 ## Support in text mining
