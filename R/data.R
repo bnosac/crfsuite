@@ -65,6 +65,8 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
       x[, c("doc_id", "sentence_id", "token", "pos", "label")]
     })
     rawdata <- data.table::rbindlist(rawdata, idcol = "data")
+    rawdata$doc_id <- as.integer(factor(sprintf("%s-%s", rawdata$data, rawdata$doc_id)))
+    file.remove(temporary_file)
   }else if(type == "conll2002-es"){
     url <- "https://raw.githubusercontent.com/bnosac-dev/nltk_data/gh-pages/packages/corpora/conll2002.zip"
     download.file(url, temporary_file)
@@ -89,6 +91,7 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
       x[, c("doc_id", "token", "pos", "label")]
     })
     rawdata <- data.table::rbindlist(rawdata, idcol = "data")
+    rawdata$doc_id <- as.integer(factor(sprintf("%s-%s", rawdata$data, rawdata$doc_id)))
     file.remove(temporary_file)
   }else if(type == "GermanNER"){
     rawdata <- readLines("https://raw.githubusercontent.com/bnosac-dev/FOX/master/input/GermanNER/full_train.tsv", encoding = "UTF-8")
