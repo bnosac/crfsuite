@@ -83,7 +83,9 @@ Rcpp::List crfsuite_model_build(const char* file_model,
     for(int i=group_start; i<=group_end; i++) { 
       std::vector<CRFSuite::Attribute> termfeatures;
       for(int j=0; j<nfeatures; j++) {  
-        termfeatures.push_back(CRFSuite::Attribute(std::string(x(i, j)), 1.));
+        if(!Rcpp::CharacterVector::is_na(x(i, j))){
+          termfeatures.push_back(CRFSuite::Attribute(std::string(x(i, j)), 1.));  
+        }
       }
       termsequenceattributes.push_back(termfeatures);
       labels.push_back(y[i]);
@@ -173,7 +175,9 @@ Rcpp::List crfsuite_predict(const std::string file_model,
     for(int i=group_start; i<=group_end; i++) { 
       std::vector<CRFSuite::Attribute> termfeatures;
       for(int j=0; j<nfeatures; j++) {  
-        termfeatures.push_back(CRFSuite::Attribute(std::string(x(i, j)), 1.));
+        if(!Rcpp::CharacterVector::is_na(x(i, j))){
+          termfeatures.push_back(CRFSuite::Attribute(std::string(x(i, j)), 1.));
+        }
       }
       termsequenceattributes.push_back(termfeatures);
     }
