@@ -40,6 +40,9 @@
 
 #include <crfsuite.h>
 #include "crfsuite_api.hpp"
+#include <Rcpp.h>
+#include <fstream>
+#include <cstdlib>
 
 namespace CRFSuite
 {
@@ -255,6 +258,12 @@ std::string Trainer::help(const std::string& name)
 
 void Trainer::message(const std::string& msg)
 {
+  //Rcpp::Rcout << "The value is " <<  << std::endl;
+  Rcpp::checkUserInterrupt();
+  std::ofstream log_file;
+  log_file.open(getenv("CRFSUITE_TRAINER_LOG"), std::ofstream::out | std::ofstream::app);
+  log_file << msg;
+  log_file.close();
 }
 
 int Trainer::__logging_callback(void *instance, const char *format, va_list args)

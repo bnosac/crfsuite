@@ -102,9 +102,25 @@ Rcpp::List crfsuite_model_build(const char* file_model,
   CRFSuite::Tagger modeltagger;
   modeltagger.open(file_model);
   std::vector<std::string> output_labels = modeltagger.labels();
-  
+  // Get the model parameters
+  std::vector<std::string> args = model.params();
+  std::vector<std::string> args_description;
+  std::vector<std::string> args_values;
+  for(unsigned int i=0; i<args.size(); i++) { 
+    args_description.push_back(model.help(args[i]));
+    args_values.push_back(model.get(args[i]));
+  }
+
   // Return file + labels
-  Rcpp::List out = Rcpp::List::create(Rcpp::Named("file_model") = file_model, Rcpp::Named("labels") = output_labels) ;
+  Rcpp::List out = Rcpp::List::create(Rcpp::Named("method") = method, 
+                                      Rcpp::Named("type") = type,
+                                      Rcpp::Named("labels") = output_labels,
+                                      Rcpp::Named("options") = Rcpp::DataFrame::create(
+                                        Rcpp::Named("arg") = args,
+                                        Rcpp::Named("arg_value") = args_values,
+                                        Rcpp::Named("description") = args_description,
+                                        Rcpp::Named("stringsAsFactors") = false),
+                                      Rcpp::Named("file_model") = file_model);
   return out;
 }
 

@@ -13,22 +13,32 @@ For installing the development version of this package: `devtools::install_githu
 
 ```
 library(crfsuite)
+##
 ## Get some training data
+##
 x <- ner_download_modeldata("conll2002-nl")
 crf_train <- subset(x, data == "ned.train")
 crf_test <- subset(x, data == "testa")
 
+##
 ## Build the CRF model
+##
+opts <- crf_options("lbfgs")
+opts <- opts$default
+opts$max_iterations <- 25
 model <- crf(y = crf_train$label, x = crf_train[, c("token", "pos")], 
              group = crf_train$doc_id, 
-             method = "lbfgs", options = list(max_iterations = 5), trace = TRUE) 
+             method = "lbfgs", options = opts, trace = FALSE) 
 model
-summary(model, "modeldetails.txt")
+stats <- summary(model, "modeldetails.txt")
+plot(stats$iterations$loss)
 
+##
 ## Use the CRF model to label a sequence
+##
 scores <- predict(model, 
                   newdata = crf_test[, c("token", "pos")], group = crf_test$doc_id)
-head(scores)
+table(scores$label)
 table(scores$label == crf_test$label)
 ```
 

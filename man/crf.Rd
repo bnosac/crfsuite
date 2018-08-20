@@ -33,9 +33,13 @@ crf(x, y, group, method = c("lbfgs", "l2sgd", "averaged-perceptron",
 \value{
 an object of class crf which is a list with elements
 \itemize{
- \item{file_model: }{The path where the CRF model is stored}
+ \item{method: }{The training method}
+ \item{type: }{The type of graphical model which is always set crf1d: Linear-chain (first-order Markov) CRF}
  \item{labels: }{The training labels}
+ \item{options: }{A data.frame with the training options provided to the algorithm}
+ \item{file_model: }{The path where the CRF model is stored}
  \item{attribute_names: }{The column names of \code{x}}
+ \item{log: }{The training log of the algorithm}
 }
 }
 \description{
@@ -48,11 +52,16 @@ crf_train <- subset(x, data == "ned.train")
 crf_test <- subset(x, data == "testa")
 
 ## Build the CRF model
+opts <- crf_options("lbfgs")
+opts <- opts$default
+opts$max_iterations <- 5
 model <- crf(y = crf_train$label, x = crf_train[, c("token", "pos")], 
              group = crf_train$doc_id, 
-             method = "lbfgs", options = list(max_iterations = 5), trace = TRUE) 
+             method = "lbfgs", options = opts, trace = TRUE) 
 model
-summary(model, "modeldetails.txt")
+stats <- summary(model, "modeldetails.txt")
+stats
+plot(stats$iterations$loss)
 
 ## Use the CRF model to label a sequence
 scores <- predict(model, 
