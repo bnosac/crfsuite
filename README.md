@@ -13,16 +13,14 @@ For installing the development version of this package: `devtools::install_githu
 
 ## Data format
 
-In order to build a CRF model, you need to have sequences of labels (the hidden state Y) and attributes of the observations corresponding to the labels (X). 
+In order to build a CRF model, you need to have **sequences of labels** (the hidden state Y) and **attributes of the observations corresponding to the labels** (X). 
 
-Generally the labels follow this type of scheme B-ORG, I-ORG, E-ORG or B-MYTYPE, I-MYTYPE, E-MYTYPE, O. Indicating the beginng of a certain category (B-), the intermediate part of a certain category (I-) and the ending of a certain category (E-).
+- Generally the labels follow this type of scheme B-ORG, I-ORG, E-ORG or B-MYTYPE, I-MYTYPE, E-MYTYPE, O. Indicating the beginng of a certain category (B-), the intermediate part of a certain category (I-) and the ending of a certain category (E-).
+- `I went to the New York City District on holidays` would e.g. be labelled as 
+`O, O, O, O, B-ORG, I-ORG, I-ORG, I-ORG, O, O`
+- The attributes of the observations are mostly something like the term itself, the neighbouring terms, the parts of speech, the neighbouring parts of speech or any specific feature you can extract and which are relevant to your business domain (e.g. the number of numbers in the token, how far is it from the start of the document or end of the document, ...).
 
-`I went to the New York City District on holidays` would e.g. be labelled as 
-`O, O, O, O, B-ORG, I-ORG, I-ORG, I-ORG, O, O`d
-
-The attributes of the observations are mostly something like the term itself, the neighbouring terms, the parts of speech, the neighbouring parts of speech or any specific feature you can extract and which are relevant to your business domain (e.g. the number of numbers in the token, how far is it from the start of the document or end of the document, ...).
-
-As an example, let's get some data in Dutch used for Named Entity Recognition. It contains 1 row per term and provides entity labels as well as the parts of speech tag for each term. As basic feature enrichment we add the parts of speech tag of the preceding and the next term.
+As an example, let's get some data in Dutch for doing Named Entity Recognition. It contains 1 row per term and provides entity labels as well as the parts of speech tag for each term. As basic feature enrichment we add the parts of speech tag of the preceding and the next term which we will use later when building the model.
 
 ```
 library(crfsuite)
@@ -59,9 +57,11 @@ crf_train <- subset(x, data == "ned.train")
 crf_test <- subset(x, data == "testa")
 ```
 
-And start building your model. By default, the CRF model is trained using L-BFGS with L1/L2 regularization. In the below example we use the default parameters and decrease the iterations a bit to have something within a minute.
+And start building your model. 
 
-Provide the label with the categories (y) and the and the attributes of the observations (x) and indicate what is the sequence group (in this case we take document identifier).
+- By default, the **CRF model is trained using L-BFGS with L1/L2 regularization**. 
+- In the below example we use the default parameters and decrease the iterations a bit to have something within a minute. 
+- Provide the label with the categories (y) and the and the attributes of the observations (x) and indicate what is the sequence group (in this case we take document identifier).
 
 ```
 opts <- crf_options("lbfgs")
@@ -112,6 +112,7 @@ subset(example, entity == "Person")
 ## Improve the model
 
 When building the model, you need to 
+
 - **tune the parameters of the training algorithm** (L-BFGS, SBD, Averaged Perceptron, Passive/Aggressive, AROW)
 - **provide good observation attributes which are specific to your domain**
 
@@ -145,9 +146,8 @@ overview$byClass[, c("Precision", "Recall", "F1")]
 
 To obtain better models, you need to do feature engineering specific to your business domain.
 
-In CRF models, the labels (y) obey the Markov property with respect to the graph conditional on the CRF attributes (x). In order to construct attributes (x) of the observations, one looks to neighbouring elements of the tokens (for example 2 words before/after the token). The following example includes features of the neighbouring tokens (namely neighbouring terms and neighbouring parts of speech tags). 
-
-Please visit the udpipe R package (https://CRAN.R-project.org/package=udpipe) for more information on how to extract e.g. parts of speech tags or other language features of tokens if you want get richer NLP features of the word neighbours.
+- In CRF models, the labels (y) obey the Markov property with respect to the graph conditional on the CRF attributes (x). In order to construct attributes (x) of the observations, one looks to neighbouring elements of the tokens (for example 2 words before/after the token). The following example includes features of the neighbouring tokens (namely neighbouring terms and neighbouring parts of speech tags). 
+- Please visit the udpipe R package (https://CRAN.R-project.org/package=udpipe) for more information on how to extract e.g. parts of speech tags or other language features of tokens if you want get richer NLP features of the word neighbours.
 
 ```
 library(crfsuite)
