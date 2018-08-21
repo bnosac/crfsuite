@@ -131,6 +131,6 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
     rawdata <- rawdata[, c("doc_id", "sentence_id", "token", "pos", "label")]
     file.remove(temporary_file)
   }
-  rawdata
+  setDT(rawdata)
 }
 

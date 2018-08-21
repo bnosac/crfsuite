@@ -27,8 +27,13 @@
 #' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
 #' @export
 #' @examples 
+#' library(data.table)
 #' ## Get some training data
 #' x <- ner_download_modeldata("conll2002-nl")
+#' x <- as.data.table(x)
+#' x <- x[, pos_previous := shift(pos, n = 1, type = "lag"), by = list(doc_id)]
+#' x <- x[, pos_next := shift(pos, n = 1, type = "lead"), by = list(doc_id)]
+#' x <- as.data.frame(x)
 #' crf_train <- subset(x, data == "ned.train")
 #' crf_test <- subset(x, data == "testa")
 #' 
@@ -36,7 +41,8 @@
 #' opts <- crf_options("lbfgs")
 #' opts <- opts$default
 #' opts$max_iterations <- 5
-#' model <- crf(y = crf_train$label, x = crf_train[, c("token", "pos")], 
+#' model <- crf(y = crf_train$label, 
+#'              x = crf_train[, c("token", "pos", "pos_previous", "pos_next")], 
 #'              group = crf_train$doc_id, 
 #'              method = "lbfgs", options = opts, trace = TRUE) 
 #' model
@@ -46,9 +52,10 @@
 #' 
 #' ## Use the CRF model to label a sequence
 #' scores <- predict(model, 
-#'                   newdata = crf_test[, c("token", "pos")], group = crf_test$doc_id)
+#'                   newdata = crf_test[, c("token", "pos", "pos_previous", "pos_next")], 
+#'                   group = crf_test$doc_id)
 #' head(scores)
-#' table(scores$label == crf_test$label)
+#' crf_test$label <- scores$label
 #' 
 #' ## cleanup for CRAN
 #' file.remove(model$file_model)

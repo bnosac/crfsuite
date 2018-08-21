@@ -2,18 +2,20 @@
 % Please edit documentation in R/feature_engineering.R
 \name{crf_cbind_attributes}
 \alias{crf_cbind_attributes}
-\title{Enrich a data.frame by adding CRF attributes}
+\title{Enrich a data.frame by adding frequently used CRF attributes}
 \usage{
-crf_cbind_attributes(data, field, by, from = -2, to = 2, ngram_max = 3,
+crf_cbind_attributes(data, terms, by, from = -2, to = 2, ngram_max = 3,
   sep = "-")
 }
 \arguments{
 \item{data}{a data.frame which will be coerced to a data.table (cbinding will be done by reference on the existing data.frame)}
 
-\item{field}{a character vector of column names which are part of \code{data} for which we will look for preceding/following terms in the sequence}
+\item{terms}{a character vector of column names which are part of \code{data} 
+for which the function will look to the preceding and following rows in order to cbind this information to the \code{data}}
 
-\item{by}{a character vector of column names which are part of \code{data} indicating the fields which define the sequence. Preceding/following terms
-will be looked for within data of \code{by}.}
+\item{by}{a character vector of column names which are part of \code{data} indicating the fields which define the sequence. 
+Preceding/following terms will be looked for within data of \code{by}. 
+Typically this will be a document identifier or sentence identifier in an NLP context.}
 
 \item{from}{integer, by default set to -2, indicating to look up to 2 terms before the current term}
 
@@ -21,38 +23,39 @@ will be looked for within data of \code{by}.}
 
 \item{ngram_max}{integer indicating the maximum number of terms to combine (2 means bigrams, 3 trigrams, ...)}
 
-\item{sep}{character indicating how to combine the previous/next/current terms}
+\item{sep}{character indicating how to combine the previous/next/current terms. Defaults to '-'.}
 }
 \description{
-CRF attributes are merely the neighbouring information of a certain field.
+The CRF attributes which are implemented in this function 
+are merely the neighbouring information of a certain field.
 For example the previous word, the next word, the combination of the previous 2 words.
-This function cbinds these neighbouring attributes as columns to the provided data.frame.\cr
+This function \code{cbind}s these neighbouring attributes as columns to the provided data.frame.\cr
 
-By default it adds the following column to the data.frame
+By default it adds the following columns to the data.frame 
 \itemize{
- \item{the term itself \code{(field[t])}}
- \item{the next term \code{(field[t+1])}}
- \item{the term after that \code{(field[t+2])}}
- \item{the previous term \code{(field[t-1])}}
- \item{the term before the previous term \code{(field[t-2])}}
+ \item{the term itself \code{(term[t])}}
+ \item{the next term \code{(term[t+1])}}
+ \item{the term after that \code{(term[t+2])}}
+ \item{the previous term \code{(term[t-1])}}
+ \item{the term before the previous term \code{(term[t-2])}}
  \item{as well as all combinations of these terms (bigrams/trigrams/...) where up to \code{ngram_max}
 number of terms are combined.}
 }
-See the example.
+See the examples.
 }
 \examples{
 x <- data.frame(doc_id = sort(sample.int(n = 10, size = 1000, replace = TRUE)))
 x$pos <- sample(c("Art", "N", "Prep", "V", "Adv", "Adj", "Conj", 
                   "Punc", "Num", "Pron", "Int", "Misc"), 
                   size = nrow(x), replace = TRUE)
-x <- crf_cbind_attributes(x, field = "pos", by = "doc_id", 
+x <- crf_cbind_attributes(x, terms = "pos", by = "doc_id", 
                           from = -1, to = 1, ngram_max = 3)
 head(x)
 
 \dontrun{
 ## Example on some real data
 x <- ner_download_modeldata("conll2002-nl")
-x <- crf_cbind_attributes(x, field = c("token", "pos"), 
+x <- crf_cbind_attributes(x, terms = c("token", "pos"), 
                           by = c("doc_id", "sentence_id"),
                           ngram_max = 3, sep = "|")
 }

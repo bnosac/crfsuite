@@ -12,15 +12,15 @@ sprintf_na(fmt, ...)
 \item{...}{values to be passed into \code{fmt}, the \code{...} will be passed on to \code{\link[base]{sprintf}}}
 }
 \value{
-A character vector of length that of the longest input in \code{...}. 
-This is the same as what \code{\link[base]{sprintf}} would provide. 
+A character vector of length that of the longest input in \code{...}. \cr
+This is the same as what \code{\link[base]{sprintf}} would provide. \cr
 Except, in case any of the values passed on to \code{...} are \code{NA}, 
 the corresponding returned value will be set to \code{NA} for that element of the vector. \cr
 See the examples to see the difference with \code{\link[base]{sprintf}}
 }
 \description{
 Does the same as the function \code{\link[base]{sprintf}} except that if 
-in ... \code{NA} values are passed, also \code{NA} values are returned instead of being replaced by 'NA'.
+in ... \code{NA} values are passed, also \code{NA} values are returned instead of being replaced by the character string \code{'NA'}.
 }
 \examples{
 sprintf("(w-1):\%s", c("xyz", NA, "abc"))
