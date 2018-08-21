@@ -60,7 +60,7 @@ crf_test <- subset(x, data == "testa")
 And start building your model. 
 
 - By default, the **CRF model is trained using L-BFGS with L1/L2 regularization**. 
-- In the below example we use the default parameters and decrease the iterations a bit to have something within a minute. 
+- In the below example we use the default parameters and decrease the iterations a bit to have a model ready within 30 seconds. 
 - Provide the label with the categories (y) and the and the attributes of the observations (x) and indicate what is the sequence group (in this case we take document identifier).
 
 ```
