@@ -13,6 +13,10 @@ crfsuite_model_build <- function(file_model, doc_id, y, x, options, method = "lb
     .Call('_crfsuite_crfsuite_model_build', PACKAGE = 'crfsuite', file_model, doc_id, y, x, options, method, type, trace)
 }
 
+crfsuite_model <- function(file_model) {
+    .Call('_crfsuite_crfsuite_model', PACKAGE = 'crfsuite', file_model)
+}
+
 crfsuite_model_dump <- function(file_model, file_txt) {
     invisible(.Call('_crfsuite_crfsuite_model_dump', PACKAGE = 'crfsuite', file_model, file_txt))
 }

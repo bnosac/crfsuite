@@ -130,19 +130,20 @@ summary.crf <- function(object, file, ...){
   out$iterations$seconds <- as.numeric(gsub("Seconds required for this iteration: ", "", grep("^Seconds required for this iteration: ", object$log, value=TRUE)))
   out$iterations <- out$iterations[sapply(out$iterations, FUN=function(x) length(x) > 0)]
   out$last_iteration <- tail(grep("^\\*\\*\\*\\*\\* (Iteration)|(Epoch) #", object$log), 1)
-  out$last_iteration <- tail(object$log, length(object$log) - out$last_iteration)
-  out$last_iteration <- out$last_iteration[1:(head(which(out$last_iteration == ""), 1)-1)]
-  cat("Summary statistics of last iteration: ", sep = "\n")
-  cat(out$last_iteration, sep = "\n")
+  if(length(out$last_iteration) > 0){
+    out$last_iteration <- tail(object$log, length(object$log) - out$last_iteration)
+    out$last_iteration <- out$last_iteration[1:(head(which(out$last_iteration == ""), 1)-1)]
+    cat("Summary statistics of last iteration: ", sep = "\n")
+    cat(out$last_iteration, sep = "\n")  
+  }
   
   tempfile <- tempfile(pattern = "crfsuite_", fileext = ".txt")
   cat(sprintf("\nDumping summary of the model to file %s", tempfile), sep = "\n")
   crfsuite_model_dump(object$file_model, tempfile)
   if(!missing(file)){
-    cat(sprintf("Copying summary of the model to file %s", file), sep = "\n")
+    cat(sprintf("Copying summary of the model to file %s in folder %s", file, ifelse(basename(file) == file, getwd(), dirname(file))), sep = "\n")
     file.copy(from = tempfile, to = file, overwrite = TRUE)  
   }
-  
   invisible(out)
 }
 

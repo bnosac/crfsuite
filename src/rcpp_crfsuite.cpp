@@ -126,6 +126,20 @@ Rcpp::List crfsuite_model_build(const char* file_model,
   return out;
 }
 
+
+// [[Rcpp::export]]
+Rcpp::List crfsuite_model(const char* file_model){
+  // Get the labels from the model
+  CRFSuite::Tagger modeltagger;
+  modeltagger.open(file_model);
+  std::vector<std::string> output_labels = modeltagger.labels();
+
+  // Return file + labels
+  Rcpp::List out = Rcpp::List::create(Rcpp::Named("labels") = output_labels,
+                                      Rcpp::Named("file_model") = file_model);
+  return out;
+}
+
 // [[Rcpp::export]]
 void crfsuite_model_dump(const char* file_model, const char* file_txt){
   FILE * pFile = fopen (file_txt, "w");

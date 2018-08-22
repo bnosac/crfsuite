@@ -45,6 +45,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// crfsuite_model
+Rcpp::List crfsuite_model(const char* file_model);
+RcppExport SEXP _crfsuite_crfsuite_model(SEXP file_modelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type file_model(file_modelSEXP);
+    rcpp_result_gen = Rcpp::wrap(crfsuite_model(file_model));
+    return rcpp_result_gen;
+END_RCPP
+}
 // crfsuite_model_dump
 void crfsuite_model_dump(const char* file_model, const char* file_txt);
 RcppExport SEXP _crfsuite_crfsuite_model_dump(SEXP file_modelSEXP, SEXP file_txtSEXP) {
@@ -75,6 +86,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_crfsuite_crfsuite_copyright", (DL_FUNC) &_crfsuite_crfsuite_copyright, 0},
     {"_crfsuite_crfsuite_model_parameters", (DL_FUNC) &_crfsuite_crfsuite_model_parameters, 2},
     {"_crfsuite_crfsuite_model_build", (DL_FUNC) &_crfsuite_crfsuite_model_build, 8},
+    {"_crfsuite_crfsuite_model", (DL_FUNC) &_crfsuite_crfsuite_model, 1},
     {"_crfsuite_crfsuite_model_dump", (DL_FUNC) &_crfsuite_crfsuite_model_dump, 2},
     {"_crfsuite_crfsuite_predict", (DL_FUNC) &_crfsuite_crfsuite_predict, 4},
     {NULL, NULL, 0}
