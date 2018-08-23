@@ -93,6 +93,16 @@ crf <- function(x, y, group,
   model
 }
 
+as.crf <- function(file, ...){
+  ldots <- list()
+  object <- crfsuite_model(file)
+  for(element in c("method", "type", "options", "attribute_names", "log")){
+    object[[element]] <- ldots[[element]]
+  }
+  class(object) <- "crf"
+  object
+}
+
 #' @export
 print.crf <- function(x, ...){
   fsize <- file.info(x$file_model)$size
