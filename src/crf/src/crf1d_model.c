@@ -484,7 +484,10 @@ int crf1dmw_close_labelrefs(crf1dmw_t* writer)
 int crf1dmw_put_labelref(crf1dmw_t* writer, int lid, const feature_refs_t* ref, int *map)
 {
     int i, fid;
-    uint32_t n = 0, offset = 0;
+    // Make R CMD check happy
+    //uint32_t n = 0, offset = 0;
+    uint32_t n = 0;
+    // END make R CMD check happy
     FILE *fp = writer->fp;
     featureref_header_t* href = writer->href;
 
@@ -591,7 +594,10 @@ int crf1dmw_close_attrrefs(crf1dmw_t* writer)
 int crf1dmw_put_attrref(crf1dmw_t* writer, int aid, const feature_refs_t* ref, int *map)
 {
     int i, fid;
-    uint32_t n = 0, offset = 0;
+    // Make R CMD check happy
+    //uint32_t n = 0, offset = 0;
+    uint32_t n = 0;
+    // END make R CMD check happy
     FILE *fp = writer->fp;
     featureref_header_t* href = writer->href;
 

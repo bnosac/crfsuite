@@ -319,12 +319,15 @@ int  crfsuite_data_totalitems(crfsuite_data_t* data)
     return n;
 }
 
-static char *safe_strncpy(char *dst, const char *src, size_t n)
-{
-    strncpy(dst, src, n-1);
-    dst[n-1] = 0;
-    return dst;
-}
+// Make R CMD check happy
+//static char *safe_strncpy(char *dst, const char *src, size_t n)
+//{
+//  strncpy(dst, src, n-1);
+//  dst[n-1] = 0;
+//  return dst;
+//}
+// END make R CMD check happy
+
 
 void crfsuite_evaluation_init(crfsuite_evaluation_t* eval, int n)
 {

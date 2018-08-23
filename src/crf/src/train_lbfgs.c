@@ -226,9 +226,11 @@ int crfsuite_train_lbfgs(
     int ret = 0, lbret;
     floatval_t *w = NULL;
     clock_t begin = clock();
-    const int N = trainset->num_instances;
-    const int L = trainset->data->labels->num(trainset->data->labels);
-    const int A =  trainset->data->attrs->num(trainset->data->attrs);
+    // Make R CMD check happy
+    //const int N = trainset->num_instances;
+    //const int L = trainset->data->labels->num(trainset->data->labels);
+    //const int A =  trainset->data->attrs->num(trainset->data->attrs);
+    // END make R CMD check happy
     const int K = gm->num_features;
     lbfgs_internal_t lbfgsi;
     lbfgs_parameter_t lbfgsparam;

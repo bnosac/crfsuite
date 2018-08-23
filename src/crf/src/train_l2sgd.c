@@ -144,12 +144,18 @@ static int l2sgd(
     floatval_t t = 0;
     floatval_t loss = 0, sum_loss = 0;
     floatval_t best_sum_loss = DBL_MAX;
-    floatval_t eta, gain, decay = 1.;
+    // Make R CMD check happy
+    //floatval_t eta, gain, decay = 1.;
+    floatval_t eta = 1., gain, decay = 1.;
+    // END make R CMD check happy
     floatval_t improvement = 0.;
     floatval_t norm2 = 0.;
     floatval_t *pf = NULL;
     floatval_t *best_w = NULL;
-    clock_t clk_prev, clk_begin = clock();
+    // Make R CMD check happy
+    //clock_t clk_prev, clk_begin = clock();
+    clock_t clk_prev;
+    // END make R CMD check happy
     const int K = gm->num_features;
 
     if (!calibration) {
@@ -451,7 +457,9 @@ int crfsuite_train_l2sgd(
     floatval_t loss = 0;
     const int N = trainset->num_instances;
     const int K = gm->num_features;
-    const int T = gm->cap_items;
+    // Make R CMD check happy
+    //const int T = gm->cap_items;
+    // END make R CMD check happy
     training_option_t opt;
 
     /* Obtain parameter values. */

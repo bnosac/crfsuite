@@ -152,7 +152,10 @@ int crfsuite_train_averaged_perceptron(
 
 	/* Loop for epoch. */
     for (i = 0;i < opt.max_iterations;++i) {
-        floatval_t norm = 0., loss = 0.;
+        // Make R CMD check happy
+        //floatval_t norm = 0., loss = 0.;
+        floatval_t loss = 0.;
+        // END make R CMD check happy
         clock_t iteration_begin = clock();
 
         /* Shuffle the instances. */

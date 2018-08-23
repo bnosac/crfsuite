@@ -67,9 +67,13 @@ crf1d_context_t* crf1dc_new(int flag, int L, int T)
             ctx->mexp_trans = (floatval_t*)calloc(L * L, sizeof(floatval_t));
             if (ctx->mexp_trans == NULL) goto error_exit;
         }
-
-        if (ret = crf1dc_set_num_items(ctx, T)) {
-            goto error_exit;
+        // Make R CMD check happy
+        //if (ret = crf1dc_set_num_items(ctx, T)) {
+        //  goto error_exit;
+        //}
+        // END make R CMD check happy
+        if ((ret = crf1dc_set_num_items(ctx, T))) {
+          goto error_exit;
         }
 
         /* T gives the 'hint' for maximum length of items. */
@@ -435,9 +439,14 @@ floatval_t crf1dc_score(crf1d_context_t* ctx, const int *labels)
 {
     int i, j, t;
     floatval_t ret = 0;
-    const floatval_t *state = NULL, *cur = NULL, *trans = NULL;
+    // Make R CMD check happy
+    //const floatval_t *state = NULL, *cur = NULL, *trans = NULL;
+    const floatval_t *state = NULL, *trans = NULL;
+    // END make R CMD check happy
     const int T = ctx->num_items;
-    const int L = ctx->num_labels;
+    // Make R CMD check happy
+    //const int L = ctx->num_labels;
+    // END make R CMD check happy
 
     /* Stay at (0, labels[0]). */
     i = labels[0];
