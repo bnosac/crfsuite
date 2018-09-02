@@ -64,6 +64,27 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
 dashdata$current_row <- 0
 dashdata$total_rows <- nrow(dashdata$rawdata)
 current_rds <- reactiveVal("startup")
+
+save_annotation <- function(result){
+  if(file.exists(dashdata$save_as)){
+    out <- readRDS(file = dashdata$save_as)
+    if(result$doc_id %in% out$doc_id){
+      out <- subset(out, !(doc_id %in% result$doc_id & is.na(start)))
+    }
+    out <- rbind(out, setDF(result))
+    out$chunk_id <- seq_len(nrow(out))
+    out <- out[, c("annotation_time", "doc_id", "text", "start", "end", "chunk_id", "chunk_entity", "chunk")]
+    class(out) <- c("chunkrange", "data.frame")
+    saveRDS(out, file = dashdata$save_as)
+  }else{
+    out <- setDF(result)
+    out$chunk_id <- seq_len(nrow(out))
+    out <- out[, c("annotation_time", "doc_id", "text", "start", "end", "chunk_id", "chunk_entity", "chunk")]
+    class(out) <- c("chunkrange", "data.frame")
+    saveRDS(out, file = dashdata$save_as)
+  }
+  invisible(out)
+}
 ```
 
 ```{r}
@@ -82,8 +103,17 @@ currentText <- reactive({
     text <- dashdata$rawdata$text[dashdata$current_row]
     doc_id <- dashdata$rawdata$doc_id[dashdata$current_row]
   }
-  list(doc_id = doc_id, 
-       text = text)
+  info <- list(doc_id = doc_id, text = text)
+  result <- list(annotation_time = Sys.time(), 
+               doc_id = info$doc_id,
+               text = info$text,
+               start = NA_integer_,
+               end = NA_integer_,
+               chunk_id = NA_integer_,
+               chunk_entity = NA_character_, 
+               chunk = NA_character_)
+  save_annotation(result)
+  info
 })
 ```
 
@@ -128,22 +158,15 @@ observeEvent(input$ui_save, {
   info <- currentText()
   start <- input$highlighted_offset + 1
   end <- start + nchar(input$highlighted_text) - 1
-  result <- list(doc_id = info$doc_id,
-                 text = info$text,
-                 timepoint = Sys.time(), 
-                 start = start,
-                 end = end,
-                 category = input$ui_tag,
-                 selection = input$highlighted_text)
-  if(file.exists(dashdata$save_as)){
-    out <- readRDS(file = dashdata$save_as)
-    out[[length(out) + 1]] <- result
-    saveRDS(out, file = dashdata$save_as)
-  }else{
-    out <- list()
-    out[[1]] <- result
-    saveRDS(out, file = dashdata$save_as)
-  }
+  result <- list(annotation_time = Sys.time(), 
+               doc_id = info$doc_id,
+               text = info$text,
+               start = start,
+               end = end,
+               chunk_id = NA_integer_,
+               chunk_entity = input$ui_tag,
+               chunk = input$highlighted_text)
+  save_annotation(result)
   showModal(modalDialog(title = "Saved data",
                         "Annotation saved",
                         tags$ul(
@@ -151,8 +174,8 @@ observeEvent(input$ui_save, {
                           tags$li(sprintf("Directory: %s", getwd()))),
                         "Selected text: ",
                         tags$ul(
-                          tags$li(sprintf("%s", result$selection)),
-                          tags$li(sprintf("Category: %s", result$category)),
+                          tags$li(sprintf("%s", result$chunk)),
+                          tags$li(sprintf("Category: %s", result$chunk_entity)),
                           tags$li(sprintf("Text position %s - %s", result$start, result$end))),
                         size = "l", easyClose = TRUE))
 })
@@ -268,11 +291,10 @@ output$ui_taggeddata <- renderDataTable({
   input$ui_next
   if(file.exists(dashdata$save_as)){
     data <- readRDS(dashdata$save_as)
-    data <- rbindlist(data)
-    data <- setDF(data)
-    data <- data[, c("doc_id", "start", "end", "category", "selection")]
+    data <- data[, c("doc_id", "start", "end", "chunk_entity", "chunk")]
+    data <- data[rev(seq_len(nrow(data))), ]
   }else{
-    data <- data.frame(doc_id = character(), start = integer(), end = integer(), category = character(), selection = character(), stringsAsFactors = FALSE)
+    data <- data.frame(doc_id = character(), start = integer(), end = integer(), chunk_entity = character(), chunk = character(), stringsAsFactors = FALSE)
   }
   data
 }, options = list(pageLength = 10, lengthMenu = c(1, 2, 5, 10, 15, 20), rownames = FALSE))
