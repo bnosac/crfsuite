@@ -2,7 +2,7 @@
 % Please edit documentation in R/data.R
 \name{ner_download_modeldata}
 \alias{ner_download_modeldata}
-\title{Download training data for doing Named Entity Recognition (NER)}
+\title{CRF Training data: download training data for doing Named Entity Recognition (NER)}
 \usage{
 ner_download_modeldata(type = c("conll2002-nl", "conll2002-es", "GermanNER",
   "wikiner-de-wp2", "wikiner-de-wp3", "wikiner-en-wp2", "wikiner-en-wp3",

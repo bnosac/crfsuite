@@ -1,4 +1,4 @@
-#' @title Download training data for doing Named Entity Recognition (NER)
+#' @title CRF Training data: download training data for doing Named Entity Recognition (NER)
 #' @description Download training data for doing Named Entity Recognition (NER)
 #' @param type a character string with the type of data to download. See the function usage for all possible values.
 #' These data will be downloaded from either:
