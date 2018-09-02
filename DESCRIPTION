@@ -3,7 +3,8 @@ Type: Package
 Title: Conditional Random Fields for Labelling Sequential Data in Natural Language Processing
 Version: 0.1
 Maintainer: Jan Wijffels <jwijffels@bnosac.be>
-Authors@R: c(person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be'), 
+Authors@R: c(
+    person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be'), 
     person('BNOSAC', role = 'cph'), 
     person("Naoaki Okazaki", role =  c('aut', 'ctb', 'cph'), email = "okazaki@chokkan.org"))
 Description: Wraps the "CRFsuite" library <https://github.com/chokkan/crfsuite> allowing users 
@@ -12,7 +13,8 @@ Description: Wraps the "CRFsuite" library <https://github.com/chokkan/crfsuite> 
     for named entity recognition, chunking, parts of speech tagging or classification of any category you have in mind.
 License: see file LICENSE
 Copyright: see file COPYRIGHTS
-Imports: Rcpp (>= 0.11.0), data.table, udpipe (>= 0.2), utils, tools
+Imports: Rcpp (>= 0.11.0), data.table, utils, tools
+Suggests: udpipe (>= 0.7) 
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make

@@ -1,10 +1,10 @@
-#' @title NA friendly version of sprintf
+#' @title \code{NA} friendly version of sprintf
 #' @description Does the same as the function \code{\link[base]{sprintf}} except that if 
 #' in ... \code{NA} values are passed, also \code{NA} values are returned instead of being replaced by the character string \code{'NA'}.
 #' @param fmt a character vector of format strings, which will be fed on to \code{\link[base]{sprintf}}
 #' @param ... values to be passed into \code{fmt}, the \code{...} will be passed on to \code{\link[base]{sprintf}}
-#' @return A character vector of length that of the longest input in \code{...}. \cr
-#' This is the same as what \code{\link[base]{sprintf}} would provide. \cr
+#' @return The same as what \code{\link[base]{sprintf}} returns:
+#' a character vector of length that of the longest input in \code{...}. \cr
 #' Except, in case any of the values passed on to \code{...} are \code{NA}, 
 #' the corresponding returned value will be set to \code{NA} for that element of the vector. \cr
 #' See the examples to see the difference with \code{\link[base]{sprintf}}
@@ -12,10 +12,10 @@
 #' @seealso \code{\link[base]{sprintf}}
 #' @examples 
 #' sprintf("(w-1):%s", c("xyz", NA, "abc"))
-#' sprintf_na("(w-1):%s", c("xyz", NA, "abc"))
+#' txt_sprintf("(w-1):%s", c("xyz", NA, "abc"))
 #' sprintf("(w-1):%s_%s", c("xyz", NA, "abc"), c(NA, "xyz", "abc"))
-#' sprintf_na("(w-1):%s_%s", c("xyz", NA, "abc"), c(NA, "xyz", "abc"))
-sprintf_na <- function(fmt, ...){
+#' txt_sprintf("(w-1):%s_%s", c("xyz", NA, "abc"), c(NA, "xyz", "abc"))
+txt_sprintf <- function(fmt, ...){
   x <- sprintf(fmt = fmt, ...)
   ldots <- list(...)
   if(length(ldots) > 0){
@@ -106,7 +106,7 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
   look <- elements[elements < 0]
   newfields <- sprintf("%s[t%s]", field, look)
   level1 <- append(level1, newfields)
-  data[, c(newfields) := Map(x = .SD, n = look, f=function(x, n) txt_previous(x, -n)), by = by, .SDcols = rep(field, length(newfields))]
+  data[, c(newfields) := Map(x = .SD, n = look, f=function(x, n) data.table::shift(x, n = -n, type = "lag")), by = by, .SDcols = rep(field, length(newfields))]
   look <- 0
   newfields <- sprintf("%s[t]", field)
   level1 <- append(level1, newfields)
@@ -114,7 +114,7 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
   look <- elements[elements > 0]
   newfields <- sprintf("%s[t+%s]", field, look)
   level1 <- append(level1, newfields)
-  data[, c(newfields) := Map(x = .SD, n = look, f=function(x, n) txt_next(x, n)), by = by, .SDcols = rep(field, length(newfields))]
+  data[, c(newfields) := Map(x = .SD, n = look, f=function(x, n) data.table::shift(x, n = n, type = "lead")), by = by, .SDcols = rep(field, length(newfields))]
   
   posprocessfields <- append(posprocessfields, level1)
   
@@ -130,7 +130,7 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
         x$fmt <- fmt
         x
       }
-      data[, c(newfield) := do.call(sprintf_na, addfmt(.SD, fmt)), .SDcols = fields]
+      data[, c(newfield) := do.call(txt_sprintf, addfmt(.SD, fmt)), .SDcols = fields]
       posprocessfields <- append(posprocessfields, newfield)
     }
   }
@@ -139,80 +139,7 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
   ## Add also column name as for CRFsuite all attributes are the same, this allows to distinguish the attributes among the columns
   ##
   for(newfield in posprocessfields){
-    data[, c(newfield) := sprintf_na("%s=%s", newfield, unlist(.SD)), .SDcols = newfield]
+    data[, c(newfield) := txt_sprintf("%s=%s", newfield, unlist(.SD)), .SDcols = newfield]
   }
   setDF(data)
-}
-
-
-#' @title Tag a sequence of entities into 1 category
-#' @description Named Entity Recognition or Chunking labelling following the beginning/continues/end scheme are combined into 1
-#' entity. An example would be 'New', 'York', 'City', 'District' which can be labbelled as 'B-LOC', 'I-LOC', 'I-LOC', 'E-LOC'.
-#' The function looks for this sequence starting with 'B-LOC' and combines all subsequent labels into 1 category and assigns a unique identifier.
-#' @param x a character vector of categories in the sequence of occurring (e.g. B-LOC, I-LOC, I-PER, B-PER, O, O, B-PER)
-#' @param entities a list of groups, where each list element contains
-#' \itemize{
-#'  \item{start: }{A length 1 character string with the start element identifying a sequence. E.g. B-LOC}
-#'  \item{labels: }{A character vector containing all the elements which are considered being part of a same labelling sequence, including the starting element. 
-#'  E.g. \code{c('B-LOC', 'I-LOC', 'E-LOC')}}
-#' }
-#' The list name will define a label to the entity
-#' @return as list with elements \code{id_category} and \code{category} where 
-#' \itemize{
-#'  \item{category is a character vector of entities, constructed by recoding \code{x} to the names of \code{names(entities})}
-#'  \item{id_category is an integer vector containing unique identifiers identfying the compound label sequence such that e.g. the sequence 'B-LOC', 'I-LOC', 'I-LOC', 'E-LOC'
-#'  (New York City District) would get the same \code{id_category} identifier.}
-#' }
-#' See the examples.
-#' @export
-#' @examples 
-#' library(data.table)
-#' x <- ner_download_modeldata("conll2002-nl")
-#' x <- as.data.table(x)
-#' 
-#' ##
-#' ## Define entity groups 
-#' ## and combine B-LOC I-LOC I-LOC sequences as 1 group (e.g. New York City) 
-#' groups <- list(
-#'  Location = list(start = "B-LOC", labels = c("B-LOC", "I-LOC", "E-LOC")),
-#'  Organisation =  list(start = "B-ORG", labels = c("B-ORG", "I-ORG", "E-ORG")),
-#'  Person = list(start = "B-PER", labels = c("B-PER", "I-PER", "E-PER")), 
-#'  Misc = list(start = "B-MISC", labels = c("B-MISC", "I-MISC", "E-MISC")))
-#' x[, c("id", "entity") := crf_entities(label, entities = groups), by = "doc_id"]
-#' 
-#' ## Show some organisations
-#' subset(x, entity == "Organisation")
-crf_entities <- function(x, entities){
-  ## Data checks
-  if(!all(sapply(entities, FUN=function(x) "start" %in% names(x) & "labels" %in% names(x)))){
-    stop("entities should be list with elements start and labels")
-  }
-  stopifnot(is.character(x))
-  
-  ## Some data preparation on the entity groups
-  starts_with <- sapply(entities, FUN=function(x) x$start)
-  restentities <- lapply(entities, FUN=function(x) setdiff(x$labels, x$start))
-  names(restentities) <- starts_with
-  
-  ## START
-  newgroup <- rep(TRUE, length(x))
-  x_prev <- udpipe::txt_previous(x, n = 1)
-  ## current group is same as previous group then we need to consider this together as 1 unless the previous one is part of the starting category
-  newgroup[which(x == x_prev & !x %in% starts_with)] <- FALSE
-  ## current group is not part of start category but previous group is, look if current category part of the categories of the start
-  idx <- x %in% unlist(restentities)
-  if(sum(idx) > 0){
-    is_same_grp <- mapply(x[idx], x_prev[idx], FUN=function(current, previous){
-      current %in% restentities[[previous]]
-    })
-    newgroup[idx][is_same_grp] <- FALSE  
-  }
-  
-  ## Create a new ID and a label
-  out <- list()
-  out$id_category = cumsum(newgroup)
-  out$category <- txt_recode(x = x, 
-                             from = unlist(lapply(entities, FUN=function(x) x$labels)), 
-                             to = rep(names(entities), sapply(entities, FUN=function(x) length(x$labels))))
-  out
 }
