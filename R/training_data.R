@@ -24,9 +24,9 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' labels <- readRDS(system.file("app", "crfsuite_annotation_BXLreviews.rds", 
+#' chunks <- readRDS(system.file("app", "crfsuite_annotation_BXLreviews.rds", 
 #'                               package = "crfsuite"))
-#' str(labels)
+#' str(chunks)
 #' 
 #' ## Note, this works only if udpipe has version 0.7 or newer versions 
 #' library(udpipe)
@@ -37,7 +37,7 @@
 #' x <- as.data.frame(x, detailed = TRUE)
 #' str(x)
 #' 
-#' x <- merge(labels, x)
+#' x <- merge(chunks, x)
 #' table(x$chunk_entity)
 #' }
 merge.chunkrange <- function(x, y, default_entity = "0", ...){
