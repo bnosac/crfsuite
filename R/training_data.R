@@ -28,7 +28,7 @@
 #' data(airbnb_chunks, package = "crfsuite")
 #' data(airbnb, package = "crfsuite")
 #' 
-#' ## Tokenise the airbnb data (you need udpipe version >= 0.7)
+#' ## Tokenise airbnb data (you need udpipe version >= 0.7 to get the start/end)
 #' library(udpipe)
 #' udmodel <- udpipe_download_model("dutch")
 #' udmodel <- udpipe_load_model(udmodel$file_model)
@@ -40,7 +40,7 @@
 #' x <- merge(airbnb_chunks, x)
 #' table(x$chunk_entity)
 merge.chunkrange <- function(x, y, by.x = "doc_id", by.y = "doc_id", default_entity = "0", ...){
-  entity <- NULL
+  chunk_entity <- NULL
   stopifnot(inherits(x, "data.frame"))
   stopifnot(inherits(y, "data.frame"))
   stopifnot(all(c(by.x, "start", "end", "chunk_entity", "chunk_id") %in% colnames(x)))

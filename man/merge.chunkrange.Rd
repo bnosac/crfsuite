@@ -44,7 +44,7 @@ of the document.
 data(airbnb_chunks, package = "crfsuite")
 data(airbnb, package = "crfsuite")
 
-## Tokenise the airbnb data (you need udpipe version >= 0.7)
+## Tokenise airbnb data (you need udpipe version >= 0.7 to get the start/end)
 library(udpipe)
 udmodel <- udpipe_download_model("dutch")
 udmodel <- udpipe_load_model(udmodel$file_model)

@@ -13,6 +13,7 @@ Description: Wraps the "CRFsuite" library <https://github.com/chokkan/crfsuite> 
     for named entity recognition, chunking, parts of speech tagging or classification of any category you have in mind.
 License: see file LICENSE
 Copyright: see file COPYRIGHTS
+Depends: R (>= 2.10)
 Imports: Rcpp (>= 0.11.0), data.table, utils, tools
 Suggests: udpipe (>= 0.7) 
 LinkingTo: Rcpp
