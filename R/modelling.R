@@ -26,6 +26,7 @@
 #' } 
 #' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
 #' @export
+#' @seealso \code{\link{predict.crf}}
 #' @examples 
 #' data(airbnb_chunks, package = "crfsuite")
 #' data(airbnb_tokens, package = "crfsuite")
@@ -199,14 +200,15 @@ summary.crf <- function(object, file, ...){
 #' If \code{type} is 'marginal': a data.frame with columns label and marginal containing the viterbi decoded predicted label and marginal probability. \cr
 #' If \code{type} is 'sequence': a data.frame with columns group and probability containing for each sequence group the probability of the sequence.
 #' @seealso \code{\link{crf}}
+#' @examples 
 #' data(airbnb_chunks, package = "crfsuite")
 #' data(airbnb_tokens, package = "crfsuite")
 #' x <- merge(airbnb_chunks, airbnb_tokens)
 #' x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 #' model <- crf(y = x$chunk_entity, 
 #'              x = x[, grep("upos|lemma", colnames(x))], 
-#'              group = crf_train$doc_id, 
-#'              method = "lbfgs", trace = TRUE) 
+#'              group = x$doc_id, 
+#'              method = "lbfgs", options = list(max_iterations = 20)) 
 #' scores <- predict(model, 
 #'                   newdata = x[, grep("upos|lemma", colnames(x))], 
 #'                   group = x$doc_id, type = "marginal")
@@ -222,13 +224,21 @@ predict.crf <- function(object, newdata, group, type = c("marginal", "sequence")
   stopifnot(nrow(newdata) == length(group))
   type <- match.arg(type)
   if(!is.integer(group)){
-    group <- as.integer(factor(group))
+    recodegroup <- TRUE
+    group <- factor(group)
+    levs <- levels(group)
+    group <- as.integer(group)
+  }else{
+    recodegroup <- FALSE
   }
   scores <- crfsuite_predict(file_model = object$file_model, doc_id = group, x = newdata, trace = trace)
   if(type == "marginal"){
     scores <- scores$viterbi
   }else if(type == "sequence"){
     scores <- scores$sequence
+    if(recodegroup){
+      scores$group <- levs[match(scores$group, table = seq_along(levs))]
+    }
   }
   scores
 }

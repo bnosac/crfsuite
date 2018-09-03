@@ -28,16 +28,15 @@ If \code{type} is 'sequence': a data.frame with columns group and probability co
 \description{
 Predict the label sequence based on the Conditional Random Field
 }
-\seealso{
-\code{\link{crf}}
+\examples{
 data(airbnb_chunks, package = "crfsuite")
 data(airbnb_tokens, package = "crfsuite")
 x <- merge(airbnb_chunks, airbnb_tokens)
 x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 model <- crf(y = x$chunk_entity, 
              x = x[, grep("upos|lemma", colnames(x))], 
-             group = crf_train$doc_id, 
-             method = "lbfgs", trace = TRUE) 
+             group = x$doc_id, 
+             method = "lbfgs", options = list(max_iterations = 20)) 
 scores <- predict(model, 
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id, type = "marginal")
@@ -46,4 +45,7 @@ scores <- predict(model,
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id, type = "sequence")
 head(scores)
+}
+\seealso{
+\code{\link{crf}}
 }
