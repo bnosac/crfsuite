@@ -4,7 +4,8 @@
 \alias{merge.chunkrange}
 \title{CRF Training data construction: add chunk entity category to a tokenised dataset}
 \usage{
-\method{merge}{chunkrange}(x, y, default_entity = "0", ...)
+\method{merge}{chunkrange}(x, y, by.x = "doc_id", by.y = "doc_id",
+  default_entity = "0", ...)
 }
 \arguments{
 \item{x}{an object of class \code{chunkrange}. A \code{chunkrange} is just a data.frame which contains 
@@ -15,6 +16,10 @@ The \code{chunk_entity} is a label you have assigned to the chunk (e.g. ORGANISA
 \item{y}{a tokenised data.frame containing one row per doc_id/token It should have the columns \code{doc_id}, \code{start} and \code{end} where
 the fields \code{start} and \code{end} indicate the positions in the original text of the \code{doc_id} where the token starts and where it ends. 
 See the examples.}
+
+\item{by.x}{a character string of a column of \code{x} which is an identifier which defines the sequence. Defaults to 'doc_id'.}
+
+\item{by.y}{a character string of a column of \code{y} which is an identifier which defines the sequence. Defaults to 'doc_id'.}
 
 \item{default_entity}{character string with the default \code{chunk_entity} to be assigned to the token if the token is not part of any chunk range}
 
@@ -36,21 +41,18 @@ where the token is found in the text of the document, this function allows to as
 of the document.
 }
 \examples{
-\dontrun{
-chunks <- readRDS(system.file("app", "crfsuite_annotation_BXLreviews.rds", 
-                              package = "crfsuite"))
-str(chunks)
+data(airbnb_chunks, package = "crfsuite")
+data(airbnb, package = "crfsuite")
 
-## Note, this works only if udpipe has version 0.7 or newer versions 
+## Tokenise the airbnb data (you need udpipe version >= 0.7)
 library(udpipe)
-udmodel <- udpipe_download_model("english")
+udmodel <- udpipe_download_model("dutch")
 udmodel <- udpipe_load_model(udmodel$file_model)
-x <- unique(chunks[, c("doc_id", "text")])
-x <- udpipe_annotate(udmodel, x = x$text, doc_id = x$doc_id)
+x <- udpipe_annotate(udmodel, x = airbnb$text, doc_id = airbnb$doc_id)
 x <- as.data.frame(x, detailed = TRUE)
 str(x)
 
-x <- merge(chunks, x)
+## Add the entity of the chunk to the tokenised dataset
+x <- merge(airbnb_chunks, x)
 table(x$chunk_entity)
-}
 }

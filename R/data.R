@@ -134,3 +134,46 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
   setDT(rawdata)
 }
 
+
+
+#' @title Dutch reviews of AirBnB customers on Brussels address locations available at www.insideairbnb.com
+#' @description The data contains 500 reviews in Dutch of people who visited an AirBnB appartment in Brussels. \cr
+#' The data frame contains the fields 
+#' \itemize{
+#'  \item{doc_id: }{a unique identifier of the review}
+#'  \item{listing_id: }{the airbnb address identifier}
+#'  \item{text: }{text with the feedback of a customer on his visit in the AirBnB appartment}
+#' }
+#' @name airbnb
+#' @docType data
+#' @source \url{http://data.insideairbnb.com/belgium/bru/brussels/2015-10-03/visualisations/reviews.csv}, \url{http://insideairbnb.com/get-the-data.html}
+#' @seealso \code{\link{airbnb_chunks}}
+#' @examples
+#' data(airbnb)
+#' str(airbnb)
+#' head(airbnb)
+NULL
+
+
+#' @title Dutch reviews of AirBnB customers on Brussels address locations manually tagged with entities 
+#' @description The \code{\link{airbnb}} dataset was manually annotated with the shiny app inside this R package.
+#' The annotation shows chunks of data which have been flagged with the following categories: PERSON, LOCATION, DISTANCE.
+#' The dataset is an object of class \code{chunkrange} and of type data.frame which contains the following fields:
+#' \itemize{
+#'  \item{doc_id: }{a unique identifier of the review, which is also available in \code{\link{airbnb}}}
+#'  \item{listing_id: }{the airbnb address identifier}
+#'  \item{text: }{text with the feedback of a customer on his visit in the AirBnB appartment}
+#'  \item{chunk_id: }{a chunk identifier}
+#'  \item{chunk_entity: }{a chunk entity label}
+#'  \item{chunk: }{the text of the chunk which is a substring of \code{text}}
+#'  \item{start: }{the starting position in \code{text} where the \code{chunk} is found}
+#'  \item{end: }{the end position in \code{text} where the \code{chunk} is found}
+#' }
+#' @name airbnb_chunks
+#' @docType data
+#' @seealso \code{\link{airbnb_chunks}}
+#' @examples
+#' data(airbnb_chunks)
+#' str(airbnb_chunks)
+#' head(airbnb_chunks)
+NULL
