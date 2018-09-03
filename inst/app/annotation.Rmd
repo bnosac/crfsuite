@@ -1,11 +1,11 @@
 ---
-title: "crfsuite annotation"
+title: "CRFsuite tagger"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
-    theme: lumen
+    theme: united
     source_code: https://github.com/bnosac/crfsuite
 ---
 
