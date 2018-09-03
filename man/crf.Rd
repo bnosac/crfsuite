@@ -13,7 +13,7 @@ crf(x, y, group, method = c("lbfgs", "l2sgd", "averaged-perceptron",
 
 \item{y}{a character vector with the sequence of labels to model}
 
-\item{group}{an integer vector of the same length as \code{y} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
+\item{group}{an integer or character vector of the same length as \code{y} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
 
 \item{method}{character string with the type of training method. Either one of:
 \itemize{
@@ -46,8 +46,27 @@ an object of class crf which is a list with elements
 Fits a Linear-chain (first-order Markov) CRF on the provided label sequence and saves it on disk in order to do sequence labelling.
 }
 \examples{
+data(airbnb_chunks, package = "crfsuite")
+data(airbnb_tokens, package = "crfsuite")
+x <- merge(airbnb_chunks, airbnb_tokens)
+x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
+model <- crf(y = x$chunk_entity, 
+             x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
+             group = x$doc_id, 
+             method = "lbfgs", options = list(max_iterations = 20)) 
+stats <- summary(model)
+stats
+plot(stats$iterations$loss, type = "b", xlab = "Iteration", ylab = "Loss")
+scores <- predict(model, 
+                  newdata = x[, grep("upos|lemma", colnames(x))], 
+                  group = x$doc_id)
+head(scores)
+
+\dontrun{
+##
+## Build Named Entity Recogntion model
+##
 library(data.table)
-## Get some training data
 x <- ner_download_modeldata("conll2002-nl")
 x <- as.data.table(x)
 x <- x[, pos_previous := shift(pos, n = 1, type = "lag"), by = list(doc_id)]
@@ -75,6 +94,11 @@ scores <- predict(model,
                   group = crf_test$doc_id)
 head(scores)
 crf_test$label <- scores$label
+
+}
+
+
+
 
 ## cleanup for CRAN
 file.remove(model$file_model)

@@ -13,7 +13,7 @@
 \item{newdata}{a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix. 
 This data should be provided in the same format as was used for training the model}
 
-\item{group}{an integer vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
+\item{group}{an integer or character vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
 
 \item{type}{either 'marginal' or 'sequence' to get predictions at the level of \code{newdata} or a the level of the sequence \code{group}. Defaults to \code{'marginal'}}
 
@@ -30,4 +30,20 @@ Predict the label sequence based on the Conditional Random Field
 }
 \seealso{
 \code{\link{crf}}
+data(airbnb_chunks, package = "crfsuite")
+data(airbnb_tokens, package = "crfsuite")
+x <- merge(airbnb_chunks, airbnb_tokens)
+x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
+model <- crf(y = x$chunk_entity, 
+             x = x[, grep("upos|lemma", colnames(x))], 
+             group = crf_train$doc_id, 
+             method = "lbfgs", trace = TRUE) 
+scores <- predict(model, 
+                  newdata = x[, grep("upos|lemma", colnames(x))], 
+                  group = x$doc_id, type = "marginal")
+head(scores)
+scores <- predict(model, 
+                  newdata = x[, grep("upos|lemma", colnames(x))], 
+                  group = x$doc_id, type = "sequence")
+head(scores)
 }

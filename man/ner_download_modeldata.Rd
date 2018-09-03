@@ -28,8 +28,8 @@ Download training data for doing Named Entity Recognition (NER)
 }
 \examples{
 x <- ner_download_modeldata("conll2002-nl")
-x <- ner_download_modeldata("conll2002-es")
 \dontrun{
+x <- ner_download_modeldata("conll2002-es")
 x <- ner_download_modeldata("GermanNER")
 x <- ner_download_modeldata("wikiner-en-wp2")
 x <- ner_download_modeldata("wikiner-nl-wp3")

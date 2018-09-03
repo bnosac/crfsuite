@@ -2,7 +2,7 @@
 #' @description Fits a Linear-chain (first-order Markov) CRF on the provided label sequence and saves it on disk in order to do sequence labelling.
 #' @param x a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix
 #' @param y a character vector with the sequence of labels to model
-#' @param group an integer vector of the same length as \code{y} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier) 
+#' @param group an integer or character vector of the same length as \code{y} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier) 
 #' @param method character string with the type of training method. Either one of:
 #' \itemize{
 #'  \item{lbfgs: }{L-BFGS with L1/L2 regularization}
@@ -27,8 +27,27 @@
 #' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
 #' @export
 #' @examples 
+#' data(airbnb_chunks, package = "crfsuite")
+#' data(airbnb_tokens, package = "crfsuite")
+#' x <- merge(airbnb_chunks, airbnb_tokens)
+#' x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
+#' model <- crf(y = x$chunk_entity, 
+#'              x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
+#'              group = x$doc_id, 
+#'              method = "lbfgs", options = list(max_iterations = 20)) 
+#' stats <- summary(model)
+#' stats
+#' plot(stats$iterations$loss, type = "b", xlab = "Iteration", ylab = "Loss")
+#' scores <- predict(model, 
+#'                   newdata = x[, grep("upos|lemma", colnames(x))], 
+#'                   group = x$doc_id)
+#' head(scores)
+#' 
+#' \dontrun{
+#' ##
+#' ## Build Named Entity Recogntion model
+#' ##
 #' library(data.table)
-#' ## Get some training data
 #' x <- ner_download_modeldata("conll2002-nl")
 #' x <- as.data.table(x)
 #' x <- x[, pos_previous := shift(pos, n = 1, type = "lag"), by = list(doc_id)]
@@ -57,6 +76,11 @@
 #' head(scores)
 #' crf_test$label <- scores$label
 #' 
+#' }
+#' 
+#' 
+#' 
+#' 
 #' ## cleanup for CRAN
 #' file.remove(model$file_model)
 #' file.remove("modeldetails.txt")
@@ -71,6 +95,9 @@ crf <- function(x, y, group,
   x <- as.matrix(x)
   stopifnot(length(group) == length(y))
   stopifnot(nrow(x) == length(y))
+  if(!is.integer(group)){
+    group <- as.integer(factor(group))
+  }
   options <- lapply(options, as.character)
   logfile <- tempfile(pattern = sprintf("CRFSUITE_TRAINER_LOG_RUN_%s_", tools::file_path_sans_ext(basename(file))), 
                       tmpdir = getwd(), fileext = ".log")
@@ -163,7 +190,7 @@ summary.crf <- function(object, file, ...){
 #' @param object an object of class crf as returned by \code{\link{crf}}
 #' @param newdata a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix. 
 #' This data should be provided in the same format as was used for training the model
-#' @param group an integer vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier) 
+#' @param group an integer or character vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier) 
 #' @param type either 'marginal' or 'sequence' to get predictions at the level of \code{newdata} or a the level of the sequence \code{group}. Defaults to \code{'marginal'}
 #' @param trace a logical indicating to show the trace of the labelling output. Defaults to \code{FALSE}.
 #' @param ... not used
@@ -172,12 +199,31 @@ summary.crf <- function(object, file, ...){
 #' If \code{type} is 'marginal': a data.frame with columns label and marginal containing the viterbi decoded predicted label and marginal probability. \cr
 #' If \code{type} is 'sequence': a data.frame with columns group and probability containing for each sequence group the probability of the sequence.
 #' @seealso \code{\link{crf}}
+#' data(airbnb_chunks, package = "crfsuite")
+#' data(airbnb_tokens, package = "crfsuite")
+#' x <- merge(airbnb_chunks, airbnb_tokens)
+#' x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
+#' model <- crf(y = x$chunk_entity, 
+#'              x = x[, grep("upos|lemma", colnames(x))], 
+#'              group = crf_train$doc_id, 
+#'              method = "lbfgs", trace = TRUE) 
+#' scores <- predict(model, 
+#'                   newdata = x[, grep("upos|lemma", colnames(x))], 
+#'                   group = x$doc_id, type = "marginal")
+#' head(scores)
+#' scores <- predict(model, 
+#'                   newdata = x[, grep("upos|lemma", colnames(x))], 
+#'                   group = x$doc_id, type = "sequence")
+#' head(scores)
 predict.crf <- function(object, newdata, group, type = c("marginal", "sequence"), trace = FALSE, ...){
   stopifnot(file.exists(object$file_model))
   trace <- as.integer(trace)
   newdata <- as.matrix(newdata)
   stopifnot(nrow(newdata) == length(group))
   type <- match.arg(type)
+  if(!is.integer(group)){
+    group <- as.integer(factor(group))
+  }
   scores <- crfsuite_predict(file_model = object$file_model, doc_id = group, x = newdata, trace = trace)
   if(type == "marginal"){
     scores <- scores$viterbi
