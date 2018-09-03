@@ -15,7 +15,7 @@ For installing the development version of this package: `devtools::install_githu
 
 In order to build a CRF model, you need to have **sequences of labels** (the hidden state Y) and **attributes of the observations corresponding to the labels** (X). 
 
-- Generally the labels follow this type of scheme B-ORG, I-ORG, E-ORG or B-MYTYPE, I-MYTYPE, E-MYTYPE, O. Indicating the beginng of a certain category (B-), the intermediate part of a certain category (I-) and the ending of a certain category (E-).
+- Generally the labels follow this type of scheme B-ORG, I-ORG, E-ORG or B-MYTYPE, I-MYTYPE, E-MYTYPE, O. Indicating the beginning of a certain category (B-), the intermediate part of a certain category (I-) and the ending of a certain category (E-).
 - `I went to the New York City District on holidays` would e.g. be labelled as 
 `O, O, O, O, B-ORG, I-ORG, I-ORG, I-ORG, O, O`
 - The attributes of the observations are mostly something like the term itself, the neighbouring terms, the parts of speech, the neighbouring parts of speech or any specific feature you can extract and which are relevant to your business domain (e.g. the number of numbers in the token, how far is it from the start of the document or end of the document, ...).

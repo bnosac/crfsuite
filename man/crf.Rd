@@ -53,7 +53,7 @@ x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 model <- crf(y = x$chunk_entity, 
              x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
              group = x$doc_id, 
-             method = "lbfgs", options = list(max_iterations = 20)) 
+             method = "lbfgs", options = list(max_iterations = 5)) 
 stats <- summary(model)
 stats
 plot(stats$iterations$loss, type = "b", xlab = "Iteration", ylab = "Loss")
@@ -78,7 +78,7 @@ crf_test <- subset(x, data == "testa")
 ## Build the CRF model
 opts <- crf_options("lbfgs")
 opts <- opts$default
-opts$max_iterations <- 5
+opts$max_iterations <- 100
 model <- crf(y = crf_train$label, 
              x = crf_train[, c("token", "pos", "pos_previous", "pos_next")], 
              group = crf_train$doc_id, 

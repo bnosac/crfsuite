@@ -35,7 +35,7 @@
 #' model <- crf(y = x$chunk_entity, 
 #'              x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
 #'              group = x$doc_id, 
-#'              method = "lbfgs", options = list(max_iterations = 20)) 
+#'              method = "lbfgs", options = list(max_iterations = 5)) 
 #' stats <- summary(model)
 #' stats
 #' plot(stats$iterations$loss, type = "b", xlab = "Iteration", ylab = "Loss")
@@ -60,7 +60,7 @@
 #' ## Build the CRF model
 #' opts <- crf_options("lbfgs")
 #' opts <- opts$default
-#' opts$max_iterations <- 5
+#' opts$max_iterations <- 100
 #' model <- crf(y = crf_train$label, 
 #'              x = crf_train[, c("token", "pos", "pos_previous", "pos_next")], 
 #'              group = crf_train$doc_id, 
@@ -208,7 +208,7 @@ summary.crf <- function(object, file, ...){
 #' model <- crf(y = x$chunk_entity, 
 #'              x = x[, grep("upos|lemma", colnames(x))], 
 #'              group = x$doc_id, 
-#'              method = "lbfgs", options = list(max_iterations = 20)) 
+#'              method = "lbfgs", options = list(max_iterations = 5)) 
 #' scores <- predict(model, 
 #'                   newdata = x[, grep("upos|lemma", colnames(x))], 
 #'                   group = x$doc_id, type = "marginal")
@@ -217,6 +217,11 @@ summary.crf <- function(object, file, ...){
 #'                   newdata = x[, grep("upos|lemma", colnames(x))], 
 #'                   group = x$doc_id, type = "sequence")
 #' head(scores)
+#' 
+#' 
+#' ## cleanup for CRAN
+#' file.remove(model$file_model)
+#' file.remove("modeldetails.txt")
 predict.crf <- function(object, newdata, group, type = c("marginal", "sequence"), trace = FALSE, ...){
   stopifnot(file.exists(object$file_model))
   trace <- as.integer(trace)

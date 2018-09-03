@@ -36,7 +36,7 @@ x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 model <- crf(y = x$chunk_entity, 
              x = x[, grep("upos|lemma", colnames(x))], 
              group = x$doc_id, 
-             method = "lbfgs", options = list(max_iterations = 20)) 
+             method = "lbfgs", options = list(max_iterations = 5)) 
 scores <- predict(model, 
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id, type = "marginal")
@@ -45,6 +45,11 @@ scores <- predict(model,
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id, type = "sequence")
 head(scores)
+
+
+## cleanup for CRAN
+file.remove(model$file_model)
+file.remove("modeldetails.txt")
 }
 \seealso{
 \code{\link{crf}}
