@@ -42,7 +42,7 @@ tags$script('
 ')
 dashdata <- list()
 dashdata$file <- "default"
-dashdata$save_as <- sprintf("crfsuite_annotation_%s.rds", format(Sys.time(), "%Y%m%d_%H%M%S"))
+dashdata$save_as <- tempfile(pattern = sprintf("crfsuite_annotation_%s", format(Sys.time(), "%Y%m%d_%H%M%S")), fileext = ".rds")
 dashdata$categories <- c("OTHER")
 dashdata$rawdata <- data.frame(doc_id = c("introduction", "example"), text = c("<b>This tool allows to easily annnote parts of plain text in categories. Why?</b> <ul><li>In order to facilitate getting a training dataset for using the crfsuite R package</li><li>To allow to easily build statistical models for named entitiy recognition, chunking, parsing or intent classification</li></ul><b>How to annotate?</b><ol><li>Select a part of the text, indicate which category your selection belongs to and press save. </li><li>Done? Press 'annotate another document' or go to the tab 'upload new set of documents' to provide your dataset to tag.</li></ol>Start trying this out by providing a list of categories in the tab 'Manage tagging categories', press on 'annotate another document' and try it out. Once done, upload your own set of documents to tag in the tab 'Upload new set of documents'", '
 The standard Lorem Ipsum passage, used since the 1500s
@@ -66,7 +66,7 @@ dashdata$total_rows <- nrow(dashdata$rawdata)
 current_rds <- reactiveVal("startup")
 
 save_annotation <- function(result){
-  if(length(result$doc_id) == 0){
+  if(length(result$doc_id) == 0 || length(result$chunk) == 0){
     return(invisible())
   }
   if(file.exists(dashdata$save_as)){
