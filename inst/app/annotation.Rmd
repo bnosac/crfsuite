@@ -103,7 +103,7 @@ currentText <- reactive({
     text <- dashdata$rawdata$text[dashdata$current_row]
     doc_id <- dashdata$rawdata$doc_id[dashdata$current_row]
   }
-  info <- list(doc_id = doc_id, text = text)
+  info <- list(doc_id = doc_id, text = text, row = dashdata$current_row, total_rows = nrow(dashdata$rawdata))
   result <- list(annotation_time = Sys.time(), 
                doc_id = info$doc_id,
                text = info$text,
@@ -126,7 +126,8 @@ currentText <- reactive({
 
 ```{r}
 renderUI({
-  HTML(sprintf("Doc %s/%s<br>doc_id: %s", dashdata$current_row+1, dashdata$total_rows, currentText()$doc_id))
+  current <- currentText()
+  HTML(sprintf("Doc %s/%s<br>doc_id: %s", current$row, current$total_rows, current$doc_id))
 })
 tags$br()
 actionButton(inputId = "ui_next", label = "Annotate another document")
