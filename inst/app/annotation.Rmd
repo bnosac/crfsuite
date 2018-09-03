@@ -66,6 +66,9 @@ dashdata$total_rows <- nrow(dashdata$rawdata)
 current_rds <- reactiveVal("startup")
 
 save_annotation <- function(result){
+  if(length(result$doc_id) == 0){
+    return(invisible())
+  }
   if(file.exists(dashdata$save_as)){
     out <- readRDS(file = dashdata$save_as)
     if(result$doc_id %in% out$doc_id){
@@ -127,6 +130,10 @@ currentText <- reactive({
 ```{r}
 renderUI({
   current <- currentText()
+  if(length(current$doc_id) == 0){
+    current$doc_id <- "no-more-documents"
+    current$row <- 0
+  }
   HTML(sprintf("Doc %s/%s<br>doc_id: %s", current$row, current$total_rows, current$doc_id))
 })
 tags$br()
@@ -178,7 +185,7 @@ observeEvent(input$ui_save, {
                           tags$li(sprintf("%s", result$chunk)),
                           tags$li(sprintf("Category: %s", result$chunk_entity)),
                           tags$li(sprintf("Text position %s - %s", result$start, result$end))),
-                        size = "l", easyClose = TRUE))
+                        size = "l", easyClose = TRUE, fade = FALSE))
 })
 ```
 
