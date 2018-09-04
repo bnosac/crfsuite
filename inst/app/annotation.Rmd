@@ -13,8 +13,6 @@ output:
 ```{r}
 library(shiny)
 library(flexdashboard)
-library(crfsuite)
-library(data.table)
 tags$script('
   function getSelectionText() {
     var text = "";
@@ -74,13 +72,13 @@ save_annotation <- function(result){
     if(result$doc_id %in% out$doc_id){
       out <- subset(out, !(doc_id %in% result$doc_id & is.na(start)))
     }
-    out <- rbind(out, setDF(result))
+    out <- rbind(out, data.frame(result, stringsAsFactors = FALSE))
     out$chunk_id <- seq_len(nrow(out))
     out <- out[, c("annotation_time", "doc_id", "text", "start", "end", "chunk_id", "chunk_entity", "chunk")]
     class(out) <- c("chunkrange", "data.frame")
     saveRDS(out, file = dashdata$save_as)
   }else{
-    out <- setDF(result)
+    out <- data.frame(result, stringsAsFactors = FALSE)
     out$chunk_id <- seq_len(nrow(out))
     out <- out[, c("annotation_time", "doc_id", "text", "start", "end", "chunk_id", "chunk_entity", "chunk")]
     class(out) <- c("chunkrange", "data.frame")
