@@ -239,7 +239,7 @@ model <- crf(y = x$chunk_entity, x = x[, attributes],
              group = x$doc_id, 
              method = "lbfgs") 
 scores <- predict(model, newdata = x[, attributes], group = x$doc_id)
-barplot(table(scores$label), col = "royalblue")
+barplot(table(setdiff(scores$label, "O")), col = "royalblue")
 ```
 
 Now up to you.
