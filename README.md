@@ -11,7 +11,7 @@ For users unfamiliar with Conditional Random Field (CRF) models, you can read th
 ## Installation
 
 ```{r}
-install.packages("data.table")
+install.packages("udpipe")
 install.packages("crfsuite", repos = "http://www.datatailor.be/rcube", type = "source")
 ```
 
