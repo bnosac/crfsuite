@@ -242,6 +242,11 @@ scores <- predict(model, newdata = x[, attributes], group = x$doc_id)
 barplot(table(setdiff(scores$label, "O")), col = "royalblue")
 ```
 
+```{r, echo=FALSE}
+invisible(file.remove("annotator.crfsuite"))
+invisible(file.remove("tagger.crfsuite"))
+```
+
 Now up to you.
 
 ## Support in text mining
