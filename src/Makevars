@@ -11,8 +11,7 @@ OBJ1    = $(SOURCES:.c=.o)
 OBJ2    = $(OBJ1:.hpp=.o)
 OBJECTS = $(OBJ2:.cpp=.o)
 
-.PHONY: all clean
+.PHONY: all 
 
-all: $(SHLIB)  
+all: $(SHLIB); rm -f $(OBJECTS) 
 
-clean: rm -f $(OBJECTS) 
