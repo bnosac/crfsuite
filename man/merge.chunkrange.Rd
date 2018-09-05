@@ -5,7 +5,7 @@
 \title{CRF Training data construction: add chunk entity category to a tokenised dataset}
 \usage{
 \method{merge}{chunkrange}(x, y, by.x = "doc_id", by.y = "doc_id",
-  default_entity = "0", ...)
+  default_entity = "O", ...)
 }
 \arguments{
 \item{x}{an object of class \code{chunkrange}. A \code{chunkrange} is just a data.frame which contains 
@@ -21,7 +21,8 @@ See the examples.}
 
 \item{by.y}{a character string of a column of \code{y} which is an identifier which defines the sequence. Defaults to 'doc_id'.}
 
-\item{default_entity}{character string with the default \code{chunk_entity} to be assigned to the token if the token is not part of any chunk range}
+\item{default_entity}{character string with the default \code{chunk_entity} to be assigned to the token if the token is not part of any chunk range.
+Defaults to 'O'.}
 
 \item{...}{not used}
 }
