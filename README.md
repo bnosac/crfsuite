@@ -10,6 +10,11 @@ For users unfamiliar with Conditional Random Field (CRF) models, you can read th
 
 ## Installation
 
+```{r}
+install.packages("data.table")
+install.packages("crfsuite", repos = "http://www.datatailor.be/rcube", type = "source")
+```
+
 For installing the development version of this package: `devtools::install_github("bnosac/crfsuite", build_vignettes = TRUE)`
 
 ## Model building and tagging
