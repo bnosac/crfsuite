@@ -92,7 +92,7 @@ merge.chunkrange <- function(x, y, by.x = "doc_id", by.y = "doc_id", default_ent
                    }, SIMPLIFY = FALSE)
   result <- data.table::rbindlist(result)
   ## recode to IOB tagging scheme
-  result <- result[chunk_entity != '0', chunk_entity := ifelse(seq_along(chunk_entity) == 1L, sprintf("B-%s", chunk_entity), sprintf("I-%s", chunk_entity)), by = c(by.y, "chunk_id")] 
+  result <- result[chunk_entity != 'O', chunk_entity := ifelse(seq_along(chunk_entity) == 1L, sprintf("B-%s", chunk_entity), sprintf("I-%s", chunk_entity)), by = c(by.y, "chunk_id")] 
   result <- data.table::setDF(result)
   result
 }
