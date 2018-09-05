@@ -16,7 +16,8 @@
 #' See the examples.
 #' @param by.x a character string of a column of \code{x} which is an identifier which defines the sequence. Defaults to 'doc_id'.
 #' @param by.y a character string of a column of \code{y} which is an identifier which defines the sequence. Defaults to 'doc_id'.
-#' @param default_entity character string with the default \code{chunk_entity} to be assigned to the token if the token is not part of any chunk range
+#' @param default_entity character string with the default \code{chunk_entity} to be assigned to the token if the token is not part of any chunk range.
+#' Defaults to 'O'.
 #' @param ... not used
 #' @return the data.frame \code{y} where 2 columns are added, namely:
 #' \itemize{
@@ -50,7 +51,7 @@
 #' x <- merge(airbnb_chunks, x)
 #' table(x$chunk_entity)
 #' }
-merge.chunkrange <- function(x, y, by.x = "doc_id", by.y = "doc_id", default_entity = "0", ...){
+merge.chunkrange <- function(x, y, by.x = "doc_id", by.y = "doc_id", default_entity = "O", ...){
   chunk_entity <- NULL
   stopifnot(inherits(x, "data.frame"))
   stopifnot(inherits(y, "data.frame"))
