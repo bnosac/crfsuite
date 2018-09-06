@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <crfsuite.h>
 #include "crfsuite_internal.h"
+#include <R.h>
 
 void dataset_init_trainset(dataset_t *ds, crfsuite_data_t *data, int holdout)
 {
@@ -93,7 +94,10 @@ void dataset_shuffle(dataset_t *ds)
 {
     int i;
     for (i = 0;i < ds->num_instances;++i) {
-        int j = rand() % ds->num_instances;
+        //int j = rand() % ds->num_instances;
+        GetRNGstate();
+        int j = (int)(unif_rand()*RAND_MAX) % ds->num_instances;
+        PutRNGstate();
         int tmp = ds->perm[j];
         ds->perm[j] = ds->perm[i];
         ds->perm[i] = tmp;
