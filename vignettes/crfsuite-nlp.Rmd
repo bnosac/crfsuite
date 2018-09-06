@@ -208,12 +208,9 @@ data(airbnb_tokens, package = "crfsuite")
 
 ```{r, eval=FALSE}
 ## Annotate text data with udpipe (version >= 0.7)
-udmodel <- udpipe_download_model("dutch", udpipe_model_repo = "bnosac/udpipe.models.ud")
-udmodel <- udpipe_load_model(udmodel$file_model)
+udmodel <- udpipe_download_model("dutch")
 airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
-airbnb_tokens <- udpipe_annotate(udmodel, 
-                                 x = airbnb_tokens$text, doc_id = airbnb_tokens$doc_id)
-airbnb_tokens <- as.data.frame(airbnb_tokens, detailed = TRUE)
+airbnb_tokens <- udpipe(airbnb_tokens, object = udmodel)
 ```
 
 ```{r}
