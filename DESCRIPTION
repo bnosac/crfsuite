@@ -6,12 +6,17 @@ Maintainer: Jan Wijffels <jwijffels@bnosac.be>
 Authors@R: c(
     person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be'), 
     person('BNOSAC', role = 'cph'), 
-    person("Naoaki Okazaki", role =  c('aut', 'ctb', 'cph'), email = "okazaki@chokkan.org"))
+    person("Naoaki", "Okazaki", role = c('aut', 'ctb', 'cph'), comment = "CRFsuite library (BSD licensed), libLBFGS library (MIT licensed), Constant Quark Database software (BSD licensed)"),
+    person("Jorge", "Nocedal", role = c('aut', 'ctb', 'cph'), comment = "libLBFGS library (MIT licensed)"),
+    person("Jesse", "Long", role = c('aut', 'ctb', 'cph'), comment = "RumAVL library (MIT licensed)"),
+    person("Makoto", "Matsumoto", role = c('aut', 'ctb', 'cph'), comment = "Mersenne Twister library (BSD licensed)"),
+    person("Takuji", "Nishimura", role = c('aut', 'ctb', 'cph'), comment = "Mersenne Twister library (BSD licensed)"))
 Description: Wraps the "CRFsuite" library <https://github.com/chokkan/crfsuite> allowing users 
-    to fit a 1st-order linear-chain Markov Conditional Random Field model with dyad features and to apply it on existing data.
+    to fit a Conditional Random Field model and to apply it on existing data.
     The focus of the implementation is in the area of Natural Language Processing where this R package allows you to easily build and apply models 
-    for named entity recognition, chunking, parts of speech tagging or classification of any category you have in mind.
-License: see file LICENSE
+    for named entity recognition, chunking, parts of speech tagging or classification of any category you have in mind. Next to training a small web applications
+    is included in the package to allow you to easily construct training data.
+License: BSD_3_clause + file LICENSE
 Copyright: see file COPYRIGHTS
 Depends: R (>= 2.10)
 Imports: Rcpp (>= 0.11.0), data.table, utils, tools
