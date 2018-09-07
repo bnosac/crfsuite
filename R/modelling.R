@@ -1,6 +1,7 @@
 #' @title Linear-chain Conditional Random Field
 #' @description Fits a Linear-chain (first-order Markov) CRF on the provided label sequence and saves it on disk in order to do sequence labelling.
-#' @param x a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix
+#' @param x a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix.
+#' It is important to note that an attribute which has the same value in a different column is considered the same.
 #' @param y a character vector with the sequence of labels to model
 #' @param group an integer or character vector of the same length as \code{y} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier) 
 #' @param method character string with the type of training method. Either one of:
@@ -28,9 +29,45 @@
 #' @export
 #' @seealso \code{\link{predict.crf}}
 #' @examples 
+#' ##
+#' ## Build Named Entity Recogntion model
+#' ##
+#' x         <- ner_download_modeldata("conll2002-nl")
+#' x$pos     <- txt_sprintf("Parts of Speech: %s", x$pos)
+#' x$token   <- txt_sprintf("Token: %s", x$token)
+#' crf_train <- subset(x, data == "ned.train")
+#' crf_test  <- subset(x, data == "testa")
+#' 
+#' model <- crf(y = crf_train$label, 
+#'              x = crf_train[, c("token", "pos")], 
+#'              group = crf_train$doc_id, 
+#'              method = "lbfgs", 
+#'              options = list(max_iterations = 10, feature.minfreq = 5, c1 = 0, c2 = 1)) 
+#' model
+#' stats <- summary(model, "modeldetails.txt")
+#' stats
+#' plot(stats$iterations$loss)
+#' 
+#' ## Use the CRF model to label a sequence
+#' scores <- predict(model, 
+#'                   newdata = crf_test[, c("token", "pos")], 
+#'                   group = crf_test$doc_id)
+#' head(scores)
+#' crf_test$label <- scores$label
+#' 
+#' 
+#' 
+#' ##
+#' ## More detailed example where text data was annotated with the webapp in the package
+#' ## This data is joined with a tokenised dataset to construct the training data which
+#' ## is further enriched with attributes of upos/lemma in the neighbourhood
+#' ##
+#' library(udpipe)
+#' if(packageVersion("udpipe") >= "0.7"){
+#' data(airbnb, package = "crfsuite")
 #' data(airbnb_chunks, package = "crfsuite")
-#' data(airbnb_tokens, package = "crfsuite")
-#' x <- merge(airbnb_chunks, airbnb_tokens)
+#' x <- udpipe(airbnb, object = udpipe_download_model("dutch"))
+#' x <- merge(airbnb_chunks, x)
 #' x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 #' model <- crf(y = x$chunk_entity, 
 #'              x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
@@ -43,43 +80,7 @@
 #'                   newdata = x[, grep("upos|lemma", colnames(x))], 
 #'                   group = x$doc_id)
 #' head(scores)
-#' 
-#' \dontrun{
-#' ##
-#' ## Build Named Entity Recogntion model
-#' ##
-#' library(data.table)
-#' x <- ner_download_modeldata("conll2002-nl")
-#' x <- as.data.table(x)
-#' x <- x[, pos_previous := shift(pos, n = 1, type = "lag"), by = list(doc_id)]
-#' x <- x[, pos_next := shift(pos, n = 1, type = "lead"), by = list(doc_id)]
-#' x <- as.data.frame(x)
-#' crf_train <- subset(x, data == "ned.train")
-#' crf_test <- subset(x, data == "testa")
-#' 
-#' ## Build the CRF model
-#' opts <- crf_options("lbfgs")
-#' opts <- opts$default
-#' opts$max_iterations <- 100
-#' model <- crf(y = crf_train$label, 
-#'              x = crf_train[, c("token", "pos", "pos_previous", "pos_next")], 
-#'              group = crf_train$doc_id, 
-#'              method = "lbfgs", options = opts, trace = TRUE) 
-#' model
-#' stats <- summary(model, "modeldetails.txt")
-#' stats
-#' plot(stats$iterations$loss)
-#' 
-#' ## Use the CRF model to label a sequence
-#' scores <- predict(model, 
-#'                   newdata = crf_test[, c("token", "pos", "pos_previous", "pos_next")], 
-#'                   group = crf_test$doc_id)
-#' head(scores)
-#' crf_test$label <- scores$label
-#' 
 #' }
-#' 
-#' 
 #' 
 #' 
 #' ## cleanup for CRAN
@@ -121,6 +122,16 @@ crf <- function(x, y, group,
   model
 }
 
+#' @title Convert a model built with CRFsuite to an object of class crf
+#' @description If you have a model built with CRFsuite either by this R package
+#' or by another software library which wraps CRFsuite (e.g. Python/Java), you can 
+#' convert it to an object of class \code{crf} which this package can use 
+#' to inspect the model and to use it for prediction (if you can mimic the way the attributes are created).\cr
+#' This is for expert use only.
+#' @param file the path to a file on disk containing the CRFsuite model
+#' @param ... other arguments which can be set except the path to the file, namely method, type, options, attribute_names, log (expert use only)
+#' @return an object of class \code{crf}
+#' @export
 as.crf <- function(file, ...){
   ldots <- list()
   object <- crfsuite_model(file)
@@ -201,9 +212,12 @@ summary.crf <- function(object, file, ...){
 #' If \code{type} is 'sequence': a data.frame with columns group and probability containing for each sequence group the probability of the sequence.
 #' @seealso \code{\link{crf}}
 #' @examples 
+#' library(udpipe)
+#' if(packageVersion("udpipe") >= "0.7"){
+#' data(airbnb, package = "crfsuite")
 #' data(airbnb_chunks, package = "crfsuite")
-#' data(airbnb_tokens, package = "crfsuite")
-#' x <- merge(airbnb_chunks, airbnb_tokens)
+#' x <- udpipe(airbnb, object = udpipe_download_model("dutch"))
+#' x <- merge(airbnb_chunks, x)
 #' x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 #' model <- crf(y = x$chunk_entity, 
 #'              x = x[, grep("upos|lemma", colnames(x))], 
@@ -222,6 +236,7 @@ summary.crf <- function(object, file, ...){
 #' ## cleanup for CRAN
 #' file.remove(model$file_model)
 #' file.remove("modeldetails.txt")
+#' }
 predict.crf <- function(object, newdata, group, type = c("marginal", "sequence"), trace = FALSE, ...){
   stopifnot(file.exists(object$file_model))
   trace <- as.integer(trace)

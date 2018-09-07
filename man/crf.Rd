@@ -9,7 +9,8 @@ crf(x, y, group, method = c("lbfgs", "l2sgd", "averaged-perceptron",
   file = "annotator.crfsuite", trace = FALSE)
 }
 \arguments{
-\item{x}{a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix}
+\item{x}{a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix.
+It is important to note that an attribute which has the same value in a different column is considered the same.}
 
 \item{y}{a character vector with the sequence of labels to model}
 
@@ -46,9 +47,45 @@ an object of class crf which is a list with elements
 Fits a Linear-chain (first-order Markov) CRF on the provided label sequence and saves it on disk in order to do sequence labelling.
 }
 \examples{
+##
+## Build Named Entity Recogntion model
+##
+x         <- ner_download_modeldata("conll2002-nl")
+x$pos     <- txt_sprintf("Parts of Speech: \%s", x$pos)
+x$token   <- txt_sprintf("Token: \%s", x$token)
+crf_train <- subset(x, data == "ned.train")
+crf_test  <- subset(x, data == "testa")
+
+model <- crf(y = crf_train$label, 
+             x = crf_train[, c("token", "pos")], 
+             group = crf_train$doc_id, 
+             method = "lbfgs", 
+             options = list(max_iterations = 10, feature.minfreq = 5, c1 = 0, c2 = 1)) 
+model
+stats <- summary(model, "modeldetails.txt")
+stats
+plot(stats$iterations$loss)
+
+## Use the CRF model to label a sequence
+scores <- predict(model, 
+                  newdata = crf_test[, c("token", "pos")], 
+                  group = crf_test$doc_id)
+head(scores)
+crf_test$label <- scores$label
+
+
+
+##
+## More detailed example where text data was annotated with the webapp in the package
+## This data is joined with a tokenised dataset to construct the training data which
+## is further enriched with attributes of upos/lemma in the neighbourhood
+##
+library(udpipe)
+if(packageVersion("udpipe") >= "0.7"){
+data(airbnb, package = "crfsuite")
 data(airbnb_chunks, package = "crfsuite")
-data(airbnb_tokens, package = "crfsuite")
-x <- merge(airbnb_chunks, airbnb_tokens)
+x <- udpipe(airbnb, object = udpipe_download_model("dutch"))
+x <- merge(airbnb_chunks, x)
 x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 model <- crf(y = x$chunk_entity, 
              x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
@@ -61,43 +98,7 @@ scores <- predict(model,
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id)
 head(scores)
-
-\dontrun{
-##
-## Build Named Entity Recogntion model
-##
-library(data.table)
-x <- ner_download_modeldata("conll2002-nl")
-x <- as.data.table(x)
-x <- x[, pos_previous := shift(pos, n = 1, type = "lag"), by = list(doc_id)]
-x <- x[, pos_next := shift(pos, n = 1, type = "lead"), by = list(doc_id)]
-x <- as.data.frame(x)
-crf_train <- subset(x, data == "ned.train")
-crf_test <- subset(x, data == "testa")
-
-## Build the CRF model
-opts <- crf_options("lbfgs")
-opts <- opts$default
-opts$max_iterations <- 100
-model <- crf(y = crf_train$label, 
-             x = crf_train[, c("token", "pos", "pos_previous", "pos_next")], 
-             group = crf_train$doc_id, 
-             method = "lbfgs", options = opts, trace = TRUE) 
-model
-stats <- summary(model, "modeldetails.txt")
-stats
-plot(stats$iterations$loss)
-
-## Use the CRF model to label a sequence
-scores <- predict(model, 
-                  newdata = crf_test[, c("token", "pos", "pos_previous", "pos_next")], 
-                  group = crf_test$doc_id)
-head(scores)
-crf_test$label <- scores$label
-
 }
-
-
 
 
 ## cleanup for CRAN

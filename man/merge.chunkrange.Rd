@@ -42,29 +42,16 @@ where the token is found in the text of the document, this function allows to as
 of the document.
 }
 \examples{
+library(udpipe)
+if(packageVersion("udpipe") >= "0.7"){
 data(airbnb, package = "crfsuite")
 data(airbnb_chunks, package = "crfsuite")
-data(airbnb_tokens, package = "crfsuite")
+airbnb_tokens <- udpipe(airbnb, object = udpipe_download_model("dutch"))
 head(airbnb_tokens)
 head(airbnb_chunks)
 
 ## Add the entity of the chunk to the tokenised dataset
 x <- merge(airbnb_chunks, airbnb_tokens)
-table(x$chunk_entity)
-
-
-\dontrun{
-##
-## Same but instead of loading the data, 
-## use the udpipe R package version >= 0.7 to tokenise the text
-##
-library(udpipe)
-udmodel <- udpipe_download_model("dutch", 
-                                 udpipe_model_repo = "bnosac/udpipe.models.ud")
-udmodel <- udpipe_load_model(udmodel$file_model)
-x <- udpipe_annotate(udmodel, x = airbnb$text, doc_id = airbnb$doc_id)
-x <- as.data.frame(x, detailed = TRUE)
-x <- merge(airbnb_chunks, x)
 table(x$chunk_entity)
 }
 }

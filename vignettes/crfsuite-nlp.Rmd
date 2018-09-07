@@ -202,18 +202,11 @@ str(airbnb_chunks)
 table(airbnb_chunks$chunk_entity)
 ```
 
-```{r, echo=FALSE}
-data(airbnb_tokens, package = "crfsuite")
-```
-
-```{r, eval=FALSE}
+```{r}
 ## Annotate text data with udpipe (version >= 0.7)
 udmodel <- udpipe_download_model("dutch")
 airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
 airbnb_tokens <- udpipe(airbnb_tokens, object = udmodel)
-```
-
-```{r}
 str(airbnb_tokens)
 ```
 

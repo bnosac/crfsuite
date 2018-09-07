@@ -30,23 +30,30 @@ vignette("crfsuite-nlp", package = "crfsuite")
 
 ```{r}
 library(crfsuite)
-data(airbnb_chunks, package = "crfsuite")
-data(airbnb_tokens, package = "crfsuite")
 
-## Build training data + enrich with neighbouring attributes
-x <- merge(airbnb_chunks, airbnb_tokens)
-x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
-attributes <- grep("upos|lemma", colnames(x), value = TRUE)
+## Get example training data + enrich with token and part of speech 2 words before/after each token
+x <- ner_download_modeldata("conll2002-nl")
+x <- crf_cbind_attributes(x, terms = c("token", "pos"), by = c("doc_id", "sentence_id"), 
+                          from = -2, to = 2, ngram_max = 3, sep = "-")
 
-## Build model
-model <- crf(y = x$chunk_entity, x = x[, attributes], group = x$doc_id, 
-             options = list(max_iterations = 25, feature.minfreq = 5, c1 = 0, c2 = 1))
+## Split in train/test set
+crf_train <- subset(x, data == "ned.train")
+crf_test <- subset(x, data == "testa")
 
-## Prediction functionality
-scores <- predict(model, newdata = x[, attributes], group = x$doc_id)
+## Build the crf model
+attributes <- grep("token|pos", colnames(x), value=TRUE)
+model <- crf(y = crf_train$label, 
+             x = crf_train[, attributes], 
+             group = crf_train$doc_id, 
+             method = "lbfgs", options = list(max_iterations = 25, feature.minfreq = 5, c1 = 0, c2 = 1)) 
+model
+
+## Use the model to score on existing tokenised data
+scores <- predict(model, newdata = crf_test[, attributes], group = crf_test$doc_id)
+
 table(scores$label)
-         0 B-DISTANCE B-LOCATION   B-PERSON I-DISTANCE I-LOCATION   I-PERSON 
-     27646        101        326        452        394        149         10
+ B-LOC B-MISC  B-ORG  B-PER  I-LOC I-MISC  I-ORG  I-PER      O 
+   261    211    182    693     24    205    209    605  35297 
 ```
 
 

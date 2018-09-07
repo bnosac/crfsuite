@@ -29,9 +29,12 @@ If \code{type} is 'sequence': a data.frame with columns group and probability co
 Predict the label sequence based on the Conditional Random Field
 }
 \examples{
+library(udpipe)
+if(packageVersion("udpipe") >= "0.7"){
+data(airbnb, package = "crfsuite")
 data(airbnb_chunks, package = "crfsuite")
-data(airbnb_tokens, package = "crfsuite")
-x <- merge(airbnb_chunks, airbnb_tokens)
+x <- udpipe(airbnb, object = udpipe_download_model("dutch"))
+x <- merge(airbnb_chunks, x)
 x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 model <- crf(y = x$chunk_entity, 
              x = x[, grep("upos|lemma", colnames(x))], 
@@ -50,6 +53,7 @@ head(scores)
 ## cleanup for CRAN
 file.remove(model$file_model)
 file.remove("modeldetails.txt")
+}
 }
 \seealso{
 \code{\link{crf}}
