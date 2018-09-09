@@ -14,6 +14,7 @@ src/cqdb/Makefile.am
 src/cqdb/src/main.c
 src/crf/crf.vcxproj
 src/crf/Makefile.am
+src/include/Makefile.am
 src/liblbfgs/AUTHORS
 src/liblbfgs/COPYING
 src/liblbfgs/README
