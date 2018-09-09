@@ -51,7 +51,7 @@ Generally the labels follow the `IOB` type of scheme which look something like: 
 
 #### Regarding the attributes of the label observations:
 
-The attributes of the observations are mostly something like the term itself, the neighbouring terms, the parts of speech, the neighbouring parts of speech or any specific feature you can extract and which are relevant to your business domain (e.g. the number of numbers in the token, how far is it from the start of the document or end of the document, is the token capitalised, does it contain an ampersand, ...).
+The attributes of the observations are mostly something like the term itself, the neighbouring terms, the parts of speech, the neighbouring parts of speech or any specific feature you can extract and which is relevant to your business domain (e.g. the number of numbers in the token, how far is it from the start of the document or end of the document, is the token capitalised, does it contain an ampersand, ...).
 
 #### Example data
 
@@ -77,7 +77,7 @@ x <- x[, token_previous := shift(token, n = 1, type = "lag"), by = list(doc_id)]
 x <- x[, token_next     := shift(token, n = 1, type = "lead"), by = list(doc_id)]
 ```
 
-In fact CRFsuite handles all attributes equivalently, in order to distinguish between the columns, let's prepend the column name logic to each column similar as shown at http://www.chokkan.org/software/crfsuite/tutorial.html. This is done using a custom txt_sprintf function which is similar as sprintf but handles NA values gracefully.
+Note that CRFsuite handles all attributes equivalently, in order to distinguish between the columns, we need to prepend the column name logic to each column similar as shown at http://www.chokkan.org/software/crfsuite/tutorial.html. This is done using a custom txt_sprintf function which is similar as sprintf but handles NA values gracefully.
 
 ```{r}
 x <- x[, pos_previous   := txt_sprintf("pos[w-1]=%s", pos_previous), by = list(doc_id)]
@@ -92,7 +92,7 @@ x <- as.data.frame(x)
 
 ### Train your own CRF model
 
-Once you have data which are tagged with your own categories, you can build a CRF model. On the previous data, split it into a training and test dataset
+Once you have data which are tagged with your own categories, you can build a CRF model. On the previous data, split it into a training and test dataset.
 
 ```{r}
 crf_train <- subset(x, data == "ned.train")
@@ -101,7 +101,7 @@ crf_test <- subset(x, data == "testa")
 
 And start building your model. 
 
-- By default, the **CRF model is trained using L-BFGS with L1/L2 regularization**. 
+- By default, the **CRF model is trained using L-BFGS with L1/L2 regularization** but other training methods are also available, namely: SGD with L2-regularization / Averaged Perceptron / Passive Aggressive or Adaptive Regularization of Weights). 
 - In the below example we use the default parameters and decrease the iterations a bit to have a model ready within 30 seconds. 
 - Provide the label with the categories (y) and the and the attributes of the observations (x) and indicate what is the sequence group (in this case we take document identifier).
 - The model will be saved to disk in file tagger.crfsuite
@@ -121,7 +121,7 @@ plot(stats$iterations$loss, pch = 20, type = "b",
 
 ### Use the model
 
-You can use the model to get predictions to get the named entity / chunks / categories you have trained. Below this is done on the holdout data. Provide the model, your data with the attributes and indicate the group the attributes belong to.
+You can use the model to get **predictions** of the named entity / chunks / categories you have trained. Below this is done on the holdout data. Provide the model, your data with the attributes and indicate the group the attributes belong to.
 
 ```{r}
 scores <- predict(model, 
@@ -136,7 +136,7 @@ table(crf_test$entity, crf_test$label)
 
 In order to facilitate creating training data on your own data, with your own categories, a Shiny app is put inside this R package. To go short, this app allows you to:
 
-- Upload an data.frame with text to put into chunks. This data.frame should contain the fields doc_id and text and should be uploaded in .rds file format.  
+- Upload an data.frame with text you want to manually label in chunks. This data.frame should contain the fields doc_id and text and should be uploaded in .rds file format.
 - Indicate the categories you want to use in your model
 - Start annotating by selecting the chunk of text which belongs to the categories you defined
 - The annotated data is saved to disk in .rds format and can be merged with a tokenised dataset. See the example in ?merge.chunks
@@ -175,7 +175,7 @@ crf_options("lbfgs")
 crf_options("l2sgd")
 ```
 
-If you train the model with different algorithm parameters, you probably are interested to see on the Precision / Recall / F1 statistics to compare them alongside the hyperparameters. You can easily get these with the caret R package.
+If you train the model with different algorithm parameters, you probably are interested to see the Precision / Recall / F1 statistics to compare them alongside the model hyperparameters. You can easily get these with the caret R package.
 
 ```
 library(caret)
@@ -191,7 +191,7 @@ To obtain better models, you need to do feature engineering specific to your bus
 - In CRF models, the labels (y) obey the Markov property with respect to the graph conditional on the CRF attributes (x). In order to construct attributes (x) of the observations, one looks to neighbouring elements of the tokens (for example 2 words before/after the token). The following example includes features of the neighbouring tokens (namely neighbouring terms and neighbouring parts of speech tags). 
 - Please visit the udpipe R package (https://CRAN.R-project.org/package=udpipe) for more information on how to extract e.g. parts of speech tags or other language features of tokens if you want get richer NLP features of the word neighbours.
 
-This example below starts from scratch assuming that you have plain text and you annotated some chunks using the app in this package.
+This example below starts from scratch assuming that you have plain text and you annotated some chunks using the app in this package. Below the manually annotated dataset is shown.
 
 ```{r}
 library(crfsuite)
@@ -199,18 +199,29 @@ library(udpipe)
 library(data.table)
 data(airbnb_chunks, package = "crfsuite")
 str(airbnb_chunks)
+```
+
+We want to build a classifier for the following categories:
+
+```{r}
 table(airbnb_chunks$chunk_entity)
 ```
+
+In order to build the training dataset, we need to have data at the token level. In the example below, this is done using the udpipe R package (https://CRAN.R-project.org/package=udpipe).
 
 ```{r}
 ## Annotate text data with udpipe (version >= 0.7)
 udmodel <- udpipe_download_model("dutch")
+udmodel <- udpipe_load_model(udmodel$file_model)
 airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
-airbnb_tokens <- udpipe(airbnb_tokens, object = udmodel)
+airbnb_tokens <- udpipe_annotate(udmodel, 
+                                 x = airbnb_tokens$text, 
+                                 doc_id = airbnb_tokens$doc_id)
+airbnb_tokens <- as.data.frame(airbnb_tokens, detailed = TRUE)
 str(airbnb_tokens)
 ```
 
-Once you have the data in 1 row per doc_id/token, you can enrich this with the chunk entity, add relevant attributes of terms in the neighbourhood of the word or the beginning or end of the sentence (bos/eos) and start building your model.
+Once you have the data in 1 row per doc_id/token, you can enrich this with the chunk entity. Next, by using the function `crf_cbind_attributes` we enrich the training data by adding relevant attributes of words in the neighbourhood of the word. We added also a basic column indicating if the term is in the beginning or end of the sentence (bos/eos). Based on that dataset, a model can be built.
 
 ```{r}
 x <- merge(airbnb_chunks, airbnb_tokens)

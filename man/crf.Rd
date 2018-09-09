@@ -81,11 +81,15 @@ crf_test$label <- scores$label
 ## is further enriched with attributes of upos/lemma in the neighbourhood
 ##
 library(udpipe)
-if(packageVersion("udpipe") >= "0.7"){
-data(airbnb, package = "crfsuite")
 data(airbnb_chunks, package = "crfsuite")
-x <- udpipe(airbnb, object = udpipe_download_model("dutch"))
-x <- merge(airbnb_chunks, x)
+udmodel <- udpipe_download_model("dutch")
+udmodel <- udpipe_load_model(udmodel$file_model)
+airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
+airbnb_tokens <- udpipe_annotate(udmodel, 
+                                 x = airbnb_tokens$text, 
+                                 doc_id = airbnb_tokens$doc_id)
+airbnb_tokens <- as.data.frame(airbnb_tokens)
+x <- merge(airbnb_chunks, airbnb_tokens)
 x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 model <- crf(y = x$chunk_entity, 
              x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
@@ -98,7 +102,6 @@ scores <- predict(model,
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id)
 head(scores)
-}
 
 
 ## cleanup for CRAN
