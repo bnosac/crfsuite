@@ -107,6 +107,7 @@ head(scores)
 ## cleanup for CRAN
 file.remove(model$file_model)
 file.remove("modeldetails.txt")
+file.remove(udmodel$file)
 }
 \references{
 More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.

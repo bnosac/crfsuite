@@ -57,6 +57,7 @@ head(scores)
 ## cleanup for CRAN
 file.remove(model$file_model)
 file.remove("modeldetails.txt")
+file.remove(udmodel$file)
 }
 \seealso{
 \code{\link{crf}}

@@ -46,12 +46,17 @@ library(udpipe)
 if(packageVersion("udpipe") >= "0.7"){
 data(airbnb, package = "crfsuite")
 data(airbnb_chunks, package = "crfsuite")
-airbnb_tokens <- udpipe(airbnb, object = udpipe_download_model("dutch"))
+udmodel <- udpipe_download_model("dutch")
+airbnb_tokens <- udpipe(airbnb, object = udmodel)
 head(airbnb_tokens)
 head(airbnb_chunks)
 
 ## Add the entity of the chunk to the tokenised dataset
 x <- merge(airbnb_chunks, airbnb_tokens)
 table(x$chunk_entity)
+
+
+## cleanup for CRAN
+file.remove(udmodel$file_model)
 }
 }

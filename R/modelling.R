@@ -89,6 +89,7 @@
 #' ## cleanup for CRAN
 #' file.remove(model$file_model)
 #' file.remove("modeldetails.txt")
+#' file.remove(udmodel$file)
 crf <- function(x, y, group, 
                 method = c("lbfgs", "l2sgd", "averaged-perceptron", "passive-aggressive", "arow"), 
                 options = crf_options(method)$default, 
@@ -243,6 +244,7 @@ summary.crf <- function(object, file, ...){
 #' ## cleanup for CRAN
 #' file.remove(model$file_model)
 #' file.remove("modeldetails.txt")
+#' file.remove(udmodel$file)
 predict.crf <- function(object, newdata, group, type = c("marginal", "sequence"), trace = FALSE, ...){
   stopifnot(file.exists(object$file_model))
   trace <- as.integer(trace)
