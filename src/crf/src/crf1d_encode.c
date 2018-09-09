@@ -133,7 +133,9 @@ static void crf1de_state_score(
     int i, t, r;
     crf1d_context_t* ctx = crf1de->ctx;
     const int T = inst->num_items;
-    const int L = crf1de->num_labels;
+    // Make R CMD check happy
+    //const int L = crf1de->num_labels;
+    // END make R CMD check happy
 
     /* Loop over the items in the sequence. */
     for (t = 0;t < T;++t) {
@@ -169,7 +171,10 @@ crf1de_state_score_scaled(
     int i, t, r;
     crf1d_context_t* ctx = crf1de->ctx;
     const int T = inst->num_items;
-    const int L = crf1de->num_labels;
+    // Make R CMD check happy
+    //const int L = crf1de->num_labels;
+    // END make R CMD check happy
+    
 
     /* Forward to the non-scaling version for fast computation when scale == 1. */
     if (scale == 1.) {
@@ -263,9 +268,13 @@ crf1de_features_on_path(
     )
 {
     int c, i = -1, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    // Make R CMD check happy
+    //crf1d_context_t* ctx = crf1de->ctx;
+    // END make R CMD check happy
     const int T = inst->num_items;
-    const int L = crf1de->num_labels;
+    // Make R CMD check happy
+    //const int L = crf1de->num_labels;
+    // END make R CMD check happy
 
     /* Loop over the items in the sequence. */
     for (t = 0;t < T;++t) {
@@ -316,9 +325,13 @@ crf1de_observation_expectation(
     )
 {
     int c, i = -1, t, r;
-    crf1d_context_t* ctx = crf1de->ctx;
+    // Make R CMD check happy
+    //crf1d_context_t* ctx = crf1de->ctx;
+    // END make R CMD check happy
     const int T = inst->num_items;
-    const int L = crf1de->num_labels;
+    // Make R CMD check happy
+    //const int L = crf1de->num_labels;
+    // END make R CMD check happy
 
     /* Loop over the items in the sequence. */
     for (t = 0;t < T;++t) {
@@ -369,7 +382,10 @@ crf1de_model_expectation(
 {
     int a, c, i, t, r;
     crf1d_context_t* ctx = crf1de->ctx;
-    const feature_refs_t *attr = NULL, *trans = NULL;
+    // Make R CMD check happy
+    //const feature_refs_t *attr = NULL, *trans = NULL;
+    const feature_refs_t *attr = NULL;
+    // END make R CMD check happy
     const crfsuite_item_t* item = NULL;
     const int T = inst->num_items;
     const int L = crf1de->num_labels;
@@ -500,12 +516,14 @@ crf1de_save_model(
     logging_t *lg
     )
 {
-    int a, k, l, ret;
+    int a, k, l, ret=0;
     clock_t begin;
     int *fmap = NULL, *amap = NULL;
     crf1dmw_t* writer = NULL;
     const feature_refs_t *edge = NULL, *attr = NULL;
-    const floatval_t threshold = 0.01;
+    // Make R CMD check happy
+    //const floatval_t threshold = 0.01;
+    // END make R CMD check happy
     const int L = crf1de->num_labels;
     const int A = crf1de->num_attributes;
     const int K = crf1de->num_features;
@@ -548,9 +566,14 @@ crf1de_save_model(
     }
 
     /* Open a feature chunk in the model file. */
-    if (ret = crf1dmw_open_features(writer)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_open_features(writer)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_open_features(writer))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
 
     /*
      *  Write the feature values.
@@ -582,16 +605,27 @@ crf1de_save_model(
             feat.weight = w[k];
 
             /* Write the feature. */
-            if (ret = crf1dmw_put_feature(writer, fmap[k], &feat)) {
-                goto error_exit;
+            // Make R CMD check happy
+            //if (ret = crf1dmw_put_feature(writer, fmap[k], &feat)) {
+            //  goto error_exit;
+            //}
+            if ((ret = crf1dmw_put_feature(writer, fmap[k], &feat))) {
+              goto error_exit;
             }
+            // END make R CMD check happy
+            
         }
     }
 
     /* Close the feature chunk. */
-    if (ret = crf1dmw_close_features(writer)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_close_features(writer)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_close_features(writer))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
 
     logging(lg, "Number of active features: %d (%d)\n", J, K);
     logging(lg, "Number of active attributes: %d (%d)\n", B, A);
@@ -599,75 +633,136 @@ crf1de_save_model(
 
     /* Write labels. */
     logging(lg, "Writing labels\n", L);
-    if (ret = crf1dmw_open_labels(writer, L)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_open_labels(writer, L)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_open_labels(writer, L))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
     for (l = 0;l < L;++l) {
         const char *str = NULL;
         labels->to_string(labels, l, &str);
         if (str != NULL) {
-            if (ret = crf1dmw_put_label(writer, l, str)) {
-                goto error_exit;
+            // Make R CMD check happy
+            //if (ret = crf1dmw_put_label(writer, l, str)) {
+            //  goto error_exit;
+            //}
+            if ((ret = crf1dmw_put_label(writer, l, str))) {
+              goto error_exit;
             }
+            // END make R CMD check happy
             labels->free(labels, str);
         }
     }
-    if (ret = crf1dmw_close_labels(writer)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_close_labels(writer)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_close_labels(writer))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
 
     /* Write attributes. */
     logging(lg, "Writing attributes\n");
-    if (ret = crf1dmw_open_attrs(writer, B)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_open_attrs(writer, B)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_open_attrs(writer, B))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
+    
     for (a = 0;a < A;++a) {
         if (0 <= amap[a]) {
             const char *str = NULL;
             attrs->to_string(attrs, a, &str);
             if (str != NULL) {
-                if (ret = crf1dmw_put_attr(writer, amap[a], str)) {
-                    goto error_exit;
+                // Make R CMD check happy
+                //if (ret = crf1dmw_put_attr(writer, amap[a], str)) {
+                //  goto error_exit;
+                //}
+                if ((ret = crf1dmw_put_attr(writer, amap[a], str))) {
+                  goto error_exit;
                 }
+                // END make R CMD check happy
                 attrs->free(attrs, str);
             }
         }
     }
-    if (ret = crf1dmw_close_attrs(writer)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_close_attrs(writer)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_close_attrs(writer))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
 
     /* Write label feature references. */
     logging(lg, "Writing feature references for transitions\n");
-    if (ret = crf1dmw_open_labelrefs(writer, L+2)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_open_labelrefs(writer, L+2)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_open_labelrefs(writer, L+2))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
     for (l = 0;l < L;++l) {
         edge = TRANSITION(crf1de, l);
-        if (ret = crf1dmw_put_labelref(writer, l, edge, fmap)) {
-            goto error_exit;
+        // Make R CMD check happy
+        //if (ret = crf1dmw_put_labelref(writer, l, edge, fmap)) {
+        //  goto error_exit;
+        //}
+        if ((ret = crf1dmw_put_labelref(writer, l, edge, fmap))) {
+          goto error_exit;
         }
+        // END make R CMD check happy
     }
-    if (ret = crf1dmw_close_labelrefs(writer)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_close_labelrefs(writer)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_close_labelrefs(writer))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
 
     /* Write attribute feature references. */
     logging(lg, "Writing feature references for attributes\n");
-    if (ret = crf1dmw_open_attrrefs(writer, B)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_open_attrrefs(writer, B)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_open_attrrefs(writer, B))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
     for (a = 0;a < A;++a) {
         if (0 <= amap[a]) {
             attr = ATTRIBUTE(crf1de, a);
-            if (ret = crf1dmw_put_attrref(writer, amap[a], attr, fmap)) {
-                goto error_exit;
+            // Make R CMD check happy
+            //if (ret = crf1dmw_put_attrref(writer, amap[a], attr, fmap)) {
+            //  goto error_exit;
+            //}
+            if ((ret = crf1dmw_put_attrref(writer, amap[a], attr, fmap))) {
+              goto error_exit;
             }
+            // END make R CMD check happy
         }
     }
-    if (ret = crf1dmw_close_attrrefs(writer)) {
-        goto error_exit;
+    // Make R CMD check happy
+    //if (ret = crf1dmw_close_attrrefs(writer)) {
+    //  goto error_exit;
+    //}
+    if ((ret = crf1dmw_close_attrrefs(writer))) {
+      goto error_exit;
     }
+    // END make R CMD check happy
 
     /* Close the writer. */
     crf1dmw_close(writer);
@@ -894,7 +989,7 @@ static int encoder_score(encoder_t *self, const int *path, floatval_t *ptr_score
 /* LEVEL_INSTANCE -> LEVEL_INSTANCE. */
 static int encoder_viterbi(encoder_t *self, int *path, floatval_t *ptr_score)
 {
-    int i;
+    //int i;
     floatval_t score;
     crf1de_t *crf1de = (crf1de_t*)self->internal;
     score = crf1dc_viterbi(crf1de->ctx, path);

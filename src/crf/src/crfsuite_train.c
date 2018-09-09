@@ -132,7 +132,9 @@ static int crfsuite_train_train(
     int holdout
     )
 {
-    char *algorithm = NULL;
+    // Make R CMD check happy
+    //char *algorithm = NULL;
+    // END make R CMD check happy
     crfsuite_train_internal_t *tr = (crfsuite_train_internal_t*)self->internal;
     logging_t *lg = tr->lg;
     encoder_t *gm = tr->gm;

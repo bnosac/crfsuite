@@ -554,6 +554,10 @@ int cqdb_to_id(cqdb_t* db, const char *str)
                 value = (int)read_uint32(q);
                 q += sizeof(uint32_t);
                 ksize = read_uint32(q);
+                // Make R CMD check happy
+                if(ksize > 0){
+                }
+                // END make R CMD check happy
                 q += sizeof(uint32_t);
                 if (strcmp(str, (const char *)q) == 0) {
                     return value;

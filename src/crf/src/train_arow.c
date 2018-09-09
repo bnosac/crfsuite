@@ -142,29 +142,34 @@ static void delta_finalize(delta_t *dc)
     }
 }
 
+/* Make R CMD check happy
+ 
 static floatval_t delta_norm2(delta_t *dc)
-{
-    int i;
-    floatval_t norm2 = 0.;
+ {
+int i;
+floatval_t norm2 = 0.;
 
-    for (i = 0;i < dc->num_actives;++i) {
-        int k = dc->actives[i];
-        norm2 += dc->delta[k] * dc->delta[k];
-    }
-    return norm2;
+for (i = 0;i < dc->num_actives;++i) {
+int k = dc->actives[i];
+norm2 += dc->delta[k] * dc->delta[k];
+}
+return norm2;
 }
 
 static void delta_add(delta_t *dc, floatval_t *w, floatval_t *ws, const floatval_t tau, const floatval_t u)
 {
-    int i;
-    const floatval_t tauu = tau * u;
+int i;
+const floatval_t tauu = tau * u;
 
-    for (i = 0;i < dc->num_actives;++i) {
-        int k = dc->actives[i];
-        w[k] += tau * dc->delta[k];
-        ws[k] += tauu * dc->delta[k];
-    }
+for (i = 0;i < dc->num_actives;++i) {
+int k = dc->actives[i];
+w[k] += tau * dc->delta[k];
+ws[k] += tauu * dc->delta[k];
 }
+}
+
+ * 
+ END make R CMD check happy */ 
 
 static int diff(int *x, int *y, int n)
 {
@@ -177,30 +182,36 @@ static int diff(int *x, int *y, int n)
     return d;
 }
 
+/* Make R CMD check happy
+
 static floatval_t cost_insensitive(floatval_t err, floatval_t d)
-{
-    return err + 1.;
+ {
+return err + 1.;
 }
 
 static floatval_t cost_sensitive(floatval_t err, floatval_t d)
 {
-    return err + sqrt(d);
+return err + sqrt(d);
 }
 
 static floatval_t tau0(floatval_t cost, floatval_t norm, floatval_t c)
 {
-    return cost / norm;
+return cost / norm;
 }
 
 static floatval_t tau1(floatval_t cost, floatval_t norm, floatval_t c)
 {
-    return MIN(c, cost / norm);
+return MIN(c, cost / norm);
 }
 
 static floatval_t tau2(floatval_t cost, floatval_t norm, floatval_t c)
 {
-    return cost / (norm + 0.5 / c);
+return cost / (norm + 0.5 / c);
 }
+
+
+END make R CMD check happy */ 
+
 
 static int exchange_options(crfsuite_params_t* params, training_option_t* opt, int mode)
 {
@@ -242,7 +253,9 @@ int crfsuite_train_arow(
 {
     int n, i, j, k, ret = 0;
     int *viterbi = NULL;
-    floatval_t beta;
+    // Make R CMD check happy
+    //floatval_t beta;
+    // END make R CMD check happy
     floatval_t *mean = NULL, *cov = NULL, *prod = NULL;
     const int N = trainset->num_instances;
     const int K = gm->num_features;
@@ -281,11 +294,16 @@ int crfsuite_train_arow(
     logging(lg, "epsilon: %f\n", opt.epsilon);
     logging(lg, "\n");
 
-    beta = 1.0 / opt.gamma;
+    // Make R CMD check happy
+    //beta = 1.0 / opt.gamma;
+    // END make R CMD check happy
 
 	/* Loop for epoch. */
     for (i = 0;i < opt.max_iterations;++i) {
-        floatval_t norm = 0., sum_loss = 0.;
+        // Make R CMD check happy
+        //floatval_t norm = 0., sum_loss = 0.;
+        floatval_t sum_loss = 0.;
+        // END make R CMD check happy
         clock_t iteration_begin = clock();
 
         /* Shuffle the instances. */

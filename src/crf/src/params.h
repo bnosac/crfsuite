@@ -48,7 +48,8 @@ enum {
     do { \
         int __ret = 0; \
         int __mode = mode; \
-        crfsuite_params_t* __params = params;
+        crfsuite_params_t* __params = params;                  \
+        /* Make R CMD check happy */ if( __ret == 0) __ret = 0;
 
 #define    END_PARAM_MAP() \
     } while (0) ;
