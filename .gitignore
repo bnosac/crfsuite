@@ -6,3 +6,4 @@
 *.so
 *.dll
 dev
+^.udpipe
