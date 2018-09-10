@@ -20,3 +20,4 @@ src/liblbfgs/COPYING
 src/liblbfgs/README
 src/liblbfgs/lib/lib.vcxproj
 src/liblbfgs/lib/Makefile.am
+*.udpipe
