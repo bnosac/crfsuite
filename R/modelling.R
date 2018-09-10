@@ -123,8 +123,8 @@ crf <- function(x, y, group,
                        trace = trace)
   model$attribute_names <- colnames(x)
   model$log <- readLines(f)
-  models$FUN <- FUN
-  models$ldots <- list(...)
+  model$FUN <- FUN
+  model$ldots <- list(...)
   class(model) <- "crf"
   if(trace){
     cat("CRFsuite training progress log file removed", sep = "\n")
