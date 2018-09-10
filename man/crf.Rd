@@ -6,7 +6,7 @@
 \usage{
 crf(x, y, group, method = c("lbfgs", "l2sgd", "averaged-perceptron",
   "passive-aggressive", "arow"), options = crf_options(method)$default,
-  file = "annotator.crfsuite", trace = FALSE)
+  file = "annotator.crfsuite", trace = FALSE, FUN = identity, ...)
 }
 \arguments{
 \item{x}{a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix.
@@ -30,6 +30,10 @@ It is important to note that an attribute which has the same value in a differen
 \item{file}{a character string with the path to the file on disk where the CRF model will be stored.}
 
 \item{trace}{a logical indicating to show the trace of the training output. Defaults to \code{FALSE}.}
+
+\item{FUN}{a function which can be applied on raw text in order to obtain the attribute matrix used in \code{predict.crf}. Currently not used yet.}
+
+\item{...}{arguments to FUN. Currently not used yet.}
 }
 \value{
 an object of class crf which is a list with elements
@@ -41,6 +45,8 @@ an object of class crf which is a list with elements
  \item{file_model: }{The path where the CRF model is stored}
  \item{attribute_names: }{The column names of \code{x}}
  \item{log: }{The training log of the algorithm}
+ \item{FUN: }{The argument passed on to FUN}
+ \item{ldots: }{A list with the arguments passed on to ...}
 }
 }
 \description{
@@ -60,7 +66,7 @@ model <- crf(y = crf_train$label,
              x = crf_train[, c("token", "pos")], 
              group = crf_train$doc_id, 
              method = "lbfgs", 
-             options = list(max_iterations = 10, feature.minfreq = 5, c1 = 0, c2 = 1)) 
+             options = list(max_iterations = 3, feature.minfreq = 5, c1 = 0, c2 = 1)) 
 model
 stats <- summary(model, "modeldetails.txt")
 stats
@@ -74,7 +80,7 @@ head(scores)
 crf_test$label <- scores$label
 
 
-
+\dontrun{
 ##
 ## More detailed example where text data was annotated with the webapp in the package
 ## This data is joined with a tokenised dataset to construct the training data which
@@ -103,11 +109,11 @@ scores <- predict(model,
                   group = x$doc_id)
 head(scores)
 
-
 ## cleanup for CRAN
+file.remove(udmodel$file)
+}
 file.remove(model$file_model)
 file.remove("modeldetails.txt")
-file.remove(udmodel$file)
 }
 \references{
 More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.

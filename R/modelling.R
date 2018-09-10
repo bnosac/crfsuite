@@ -15,6 +15,8 @@
 #' @param options a list of options to provide to the training algorithm. See \code{\link{crf_options}} for possible options and the example below on how to provide them.
 #' @param file a character string with the path to the file on disk where the CRF model will be stored.
 #' @param trace a logical indicating to show the trace of the training output. Defaults to \code{FALSE}.
+#' @param FUN a function which can be applied on raw text in order to obtain the attribute matrix used in \code{predict.crf}. Currently not used yet.
+#' @param ... arguments to FUN. Currently not used yet.
 #' @return an object of class crf which is a list with elements
 #' \itemize{
 #'  \item{method: }{The training method}
@@ -24,6 +26,8 @@
 #'  \item{file_model: }{The path where the CRF model is stored}
 #'  \item{attribute_names: }{The column names of \code{x}}
 #'  \item{log: }{The training log of the algorithm}
+#'  \item{FUN: }{The argument passed on to FUN}
+#'  \item{ldots: }{A list with the arguments passed on to ...}
 #' } 
 #' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
 #' @export
@@ -42,7 +46,7 @@
 #'              x = crf_train[, c("token", "pos")], 
 #'              group = crf_train$doc_id, 
 #'              method = "lbfgs", 
-#'              options = list(max_iterations = 10, feature.minfreq = 5, c1 = 0, c2 = 1)) 
+#'              options = list(max_iterations = 3, feature.minfreq = 5, c1 = 0, c2 = 1)) 
 #' model
 #' stats <- summary(model, "modeldetails.txt")
 #' stats
@@ -56,7 +60,7 @@
 #' crf_test$label <- scores$label
 #' 
 #' 
-#' 
+#' \dontrun{
 #' ##
 #' ## More detailed example where text data was annotated with the webapp in the package
 #' ## This data is joined with a tokenised dataset to construct the training data which
@@ -85,15 +89,15 @@
 #'                   group = x$doc_id)
 #' head(scores)
 #' 
-#' 
 #' ## cleanup for CRAN
+#' file.remove(udmodel$file)
+#' }
 #' file.remove(model$file_model)
 #' file.remove("modeldetails.txt")
-#' file.remove(udmodel$file)
 crf <- function(x, y, group, 
                 method = c("lbfgs", "l2sgd", "averaged-perceptron", "passive-aggressive", "arow"), 
                 options = crf_options(method)$default, 
-                file = "annotator.crfsuite", trace = FALSE){
+                file = "annotator.crfsuite", trace = FALSE, FUN = identity, ...){
   type <- "crf1d"
   file <- normalizePath(path.expand(file), mustWork = FALSE)
   trace <- as.integer(trace)
@@ -119,6 +123,8 @@ crf <- function(x, y, group,
                        trace = trace)
   model$attribute_names <- colnames(x)
   model$log <- readLines(f)
+  models$FUN <- FUN
+  models$ldots <- list(...)
   class(model) <- "crf"
   if(trace){
     cat("CRFsuite training progress log file removed", sep = "\n")
@@ -139,7 +145,7 @@ crf <- function(x, y, group,
 as.crf <- function(file, ...){
   ldots <- list()
   object <- crfsuite_model(file)
-  for(element in c("method", "type", "options", "attribute_names", "log")){
+  for(element in c("method", "type", "options", "attribute_names", "log", "FUN", "ldots")){
     object[[element]] <- ldots[[element]]
   }
   class(object) <- "crf"
@@ -216,6 +222,7 @@ summary.crf <- function(object, file, ...){
 #' If \code{type} is 'sequence': a data.frame with columns group and probability containing for each sequence group the probability of the sequence.
 #' @seealso \code{\link{crf}}
 #' @examples 
+#' \dontrun{
 #' library(udpipe)
 #' data(airbnb_chunks, package = "crfsuite")
 #' udmodel <- udpipe_download_model("dutch-lassysmall")
@@ -245,6 +252,7 @@ summary.crf <- function(object, file, ...){
 #' file.remove(model$file_model)
 #' file.remove("modeldetails.txt")
 #' file.remove(udmodel$file)
+#' }
 predict.crf <- function(object, newdata, group, type = c("marginal", "sequence"), trace = FALSE, ...){
   stopifnot(file.exists(object$file_model))
   trace <- as.integer(trace)

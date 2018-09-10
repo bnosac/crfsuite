@@ -46,7 +46,7 @@ library(udpipe)
 if(packageVersion("udpipe") >= "0.7"){
 data(airbnb, package = "crfsuite")
 data(airbnb_chunks, package = "crfsuite")
-udmodel <- udpipe_download_model("dutch")
+udmodel <- udpipe_download_model("dutch-lassysmall")
 airbnb_tokens <- udpipe(airbnb, object = udmodel)
 head(airbnb_tokens)
 head(airbnb_chunks)
