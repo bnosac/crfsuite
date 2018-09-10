@@ -42,19 +42,22 @@ where the token is found in the text of the document, this function allows to as
 of the document.
 }
 \examples{
+\dontrun{
 library(udpipe)
-if(packageVersion("udpipe") >= "0.7"){
-data(airbnb, package = "crfsuite")
-data(airbnb_chunks, package = "crfsuite")
 udmodel <- udpipe_download_model("dutch-lassysmall")
-airbnb_tokens <- udpipe(airbnb, object = udmodel)
-head(airbnb_tokens)
-head(airbnb_chunks)
+if(packageVersion("udpipe") >= "0.7"){
+  data(airbnb_chunks, package = "crfsuite")
+  airbnb_chunks <- head(airbnb_chunks, 20)
+  airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
 
-## Add the entity of the chunk to the tokenised dataset
-x <- merge(airbnb_chunks, airbnb_tokens)
-table(x$chunk_entity)
+  airbnb_tokens <- udpipe(airbnb, object = udmodel)
+  head(airbnb_tokens)
+  head(airbnb_chunks)
 
+  ## Add the entity of the chunk to the tokenised dataset
+  x <- merge(airbnb_chunks, airbnb_tokens)
+  table(x$chunk_entity)
+}
 
 ## cleanup for CRAN
 file.remove(udmodel$file_model)
