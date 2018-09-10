@@ -246,6 +246,7 @@ barplot(table(scores$label[scores$label != "O"]), col = "royalblue", cex.names =
 ```{r, echo=FALSE}
 invisible(file.remove("annotator.crfsuite"))
 invisible(file.remove("tagger.crfsuite"))
+invisible(file.remove(udmodel$file))
 ```
 
 Now up to you.

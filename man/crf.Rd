@@ -82,7 +82,7 @@ crf_test$label <- scores$label
 ##
 library(udpipe)
 data(airbnb_chunks, package = "crfsuite")
-udmodel <- udpipe_download_model("dutch")
+udmodel <- udpipe_download_model("dutch-lassysmall")
 udmodel <- udpipe_load_model(udmodel$file_model)
 airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
 airbnb_tokens <- udpipe_annotate(udmodel, 
