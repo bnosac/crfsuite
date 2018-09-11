@@ -267,7 +267,10 @@ int cqdb_writer_close(cqdb_writer_t* dbw)
     }
 
     /* Initialize the file header. */
-    strncpy((char*)header.chunkid, CHUNKID, 4);
+    // Make R CMD check happy
+    // strncpy((char*)header.chunkid, CHUNKID, 4);
+    memcpy((char*)header.chunkid, CHUNKID, 4);
+    // END make R CMD check happy
     header.flag = 0;
     header.byteorder = BYTEORDER_CHECK;
     header.bwd_offset = 0;
@@ -466,7 +469,10 @@ cqdb_t* cqdb_reader(const void *buffer, size_t size)
 
         /* Read the database header. */
         p = db->buffer;
-        strncpy((char*)db->header.chunkid, (const char*)p, 4);
+        // Make R CMD check happy
+        //strncpy((char*)db->header.chunkid, (const char*)p, 4);
+        memcpy((char*)db->header.chunkid, (const char*)p, 4);
+        // END make R CMD check happy
         p += sizeof(uint32_t);
         db->header.size = read_uint32(p);
         p += sizeof(uint32_t);
