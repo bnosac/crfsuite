@@ -8,7 +8,8 @@ ner_download_modeldata(type = c("conll2002-nl", "conll2002-es", "GermanNER",
   "wikiner-de-wp2", "wikiner-de-wp3", "wikiner-en-wp2", "wikiner-en-wp3",
   "wikiner-es-wp2", "wikiner-es-wp3", "wikiner-fr-wp2", "wikiner-fr-wp3",
   "wikiner-it-wp2", "wikiner-it-wp3", "wikiner-nl-wp2", "wikiner-nl-wp3",
-  "wikiner-pl-wp3", "wikiner-pt-wp3", "wikiner-ru-wp2", "wikiner-ru-wp3"))
+  "wikiner-pl-wp3", "wikiner-pt-wp3", "wikiner-ru-wp2", "wikiner-ru-wp3"),
+  docs = -Inf)
 }
 \arguments{
 \item{type}{a character string with the type of data to download. See the function usage for all possible values.
@@ -19,6 +20,9 @@ These data will be downloaded from either:
  \item{FOX forked repository of WikiNER: }{\url{https://github.com/bnosac-dev/FOX/tree/master/input/Wikiner}}
 }
 Please visit the information on these repositories first before you use these data in any commercial product.}
+
+\item{docs}{integer indicating how many documents to sample from the data (only used for data from the NLTK repository). 
+This is only used to reduce CRAN R CMD check training time in the examples of this R package.}
 }
 \value{
 a data.frame with training data for a Named Entity Recognition task
@@ -27,12 +31,14 @@ a data.frame with training data for a Named Entity Recognition task
 Download training data for doing Named Entity Recognition (NER)
 }
 \examples{
-x <- ner_download_modeldata("conll2002-nl")
 \dontrun{
+x <- ner_download_modeldata("conll2002-nl")
 x <- ner_download_modeldata("conll2002-es")
 x <- ner_download_modeldata("GermanNER")
 x <- ner_download_modeldata("wikiner-en-wp2")
 x <- ner_download_modeldata("wikiner-nl-wp3")
 x <- ner_download_modeldata("wikiner-fr-wp3")
 }
+## reduce number of docs
+x <- ner_download_modeldata("conll2002-es", docs = 10)
 }

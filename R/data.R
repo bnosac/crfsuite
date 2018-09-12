@@ -8,17 +8,21 @@
 #'  \item{FOX forked repository of WikiNER: }{\url{https://github.com/bnosac-dev/FOX/tree/master/input/Wikiner}}
 #' }
 #' Please visit the information on these repositories first before you use these data in any commercial product.
+#' @param docs integer indicating how many documents to sample from the data (only used for data from the NLTK repository). 
+#' This is only used to reduce CRAN R CMD check training time in the examples of this R package.
 #' @return a data.frame with training data for a Named Entity Recognition task
 #' @export
 #' @examples 
-#' x <- ner_download_modeldata("conll2002-nl")
 #' \dontrun{
+#' x <- ner_download_modeldata("conll2002-nl")
 #' x <- ner_download_modeldata("conll2002-es")
 #' x <- ner_download_modeldata("GermanNER")
 #' x <- ner_download_modeldata("wikiner-en-wp2")
 #' x <- ner_download_modeldata("wikiner-nl-wp3")
 #' x <- ner_download_modeldata("wikiner-fr-wp3")
 #' }
+#' ## reduce number of docs
+#' x <- ner_download_modeldata("conll2002-es", docs = 10)
 ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "GermanNER", 
                                             "wikiner-de-wp2",
                                             "wikiner-de-wp3",
@@ -35,7 +39,8 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
                                             "wikiner-pl-wp3",
                                             "wikiner-pt-wp3",
                                             "wikiner-ru-wp2",
-                                            "wikiner-ru-wp3")){
+                                            "wikiner-ru-wp3"), 
+                                   docs = -Inf){
   .N <- sentence_id <- doc_id <- txt <- NULL
   
   type <- match.arg(type)
@@ -56,6 +61,10 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
     rawdata <- lapply(rawdata, FUN=function(x){
       x <- data.frame(txt = x, stringsAsFactors = FALSE)
       x$doc_id <- cumsum(x$txt == "-DOCSTART- -DOCSTART- O")
+      if(is.finite(docs) & docs > 0){
+        d <- unique(x$doc_id)
+        x <- x[x$doc_id %in% sample(d, size = min(docs, length(d))), ]
+      }
       x$sentence_id <- cumsum(x$txt == "") + 1L
       x <- x[x$txt != "" & x$txt != "-DOCSTART- -DOCSTART- O", ]
       x$txt <- strsplit(x$txt, " ")
@@ -83,6 +92,10 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
     rawdata <- lapply(rawdata, FUN=function(x){
       x <- data.frame(txt = x, stringsAsFactors = FALSE)
       x$doc_id <- cumsum(x$txt == "") + 1L
+      if(is.finite(docs) & docs > 0){
+        d <- unique(x$doc_id)
+        x <- x[x$doc_id %in% sample(d, size = min(docs, length(d))), ]
+      }
       x <- x[x$txt != "", ]
       x$txt <- strsplit(x$txt, " ")
       x$token <- sapply(x$txt, FUN=function(x) x[1])

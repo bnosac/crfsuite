@@ -54,9 +54,9 @@ Fits a Linear-chain (first-order Markov) CRF on the provided label sequence and 
 }
 \examples{
 ##
-## Build Named Entity Recogntion model
+## Build Named Entity Recognition model on tiny - 10 docs subset of conll2002-nl
 ##
-x         <- ner_download_modeldata("conll2002-nl")
+x         <- ner_download_modeldata("conll2002-nl", docs = 10)
 x$pos     <- txt_sprintf("Parts of Speech: \%s", x$pos)
 x$token   <- txt_sprintf("Token: \%s", x$token)
 crf_train <- subset(x, data == "ned.train")
