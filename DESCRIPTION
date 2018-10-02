@@ -1,7 +1,7 @@
 Package: crfsuite
 Type: Package
 Title: Conditional Random Fields for Labelling Sequential Data in Natural Language Processing
-Version: 0.1
+Version: 0.1.1
 Maintainer: Jan Wijffels <jwijffels@bnosac.be>
 Authors@R: c(
     person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be', comment = "R wrapper"), 
@@ -18,7 +18,7 @@ Description: Wraps the 'CRFsuite' library <https://github.com/chokkan/crfsuite> 
 License: BSD_3_clause + file LICENSE
 Depends: R (>= 2.10)
 Imports: Rcpp, data.table (>= 1.9.6), utils, tools
-Suggests: udpipe, knitr 
+Suggests: udpipe, knitr
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
 SystemRequirements: GNU make

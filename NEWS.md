@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.1.1
+
+- Change use of posix_memalign to memalign on Solaris and change use of posix_memalign to aligned_alloc in case __STDC_VERSION__ >= 201112L
+
 # CHANGES IN crfsuite VERSION 0.1
 
 - Uses CRFsuite (https://github.com/chokkan/crfsuite) version 0.12 commit dc5b6c7b726de90ca63cbf269e6476e18f1dd0d9
