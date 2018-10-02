@@ -1,6 +1,6 @@
 # CHANGES IN crfsuite VERSION 0.1.1
 
-- Change use of posix_memalign to memalign on Solaris and change use of posix_memalign to aligned_alloc in case __STDC_VERSION__ >= 201112L
+- Change use of posix_memalign to memalign on Solaris
 
 # CHANGES IN crfsuite VERSION 0.1
 
