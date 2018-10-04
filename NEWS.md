@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.2
+
+- Fix for as.crf when loaded from file and adding more arguments than just the file
+
 # CHANGES IN crfsuite VERSION 0.1.1
 
 - Change use of posix_memalign to memalign on Solaris

@@ -143,7 +143,7 @@ crf <- function(x, y, group,
 #' @return an object of class \code{crf}
 #' @export
 as.crf <- function(file, ...){
-  ldots <- list()
+  ldots <- list(...)
   stopifnot(file.exists(file))
   object <- crfsuite_model(file)
   for(element in c("method", "type", "options", "attribute_names", "log", "FUN", "ldots")){
