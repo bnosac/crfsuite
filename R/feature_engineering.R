@@ -111,3 +111,36 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
   }
   setDF(data)
 }
+
+#' @title Extract basic text features which are useful for entity recognition
+#' @description Extract basic text features which are useful for entity recognition
+#' @param x a character vector
+#' @param type a character string, which can be one of 'is_capitalised', 'is_url', 'is_email', 'is_number'
+#' @return a logical vector of the same length as \code{x}, indicating if \code{x} is capitalised, a url, an email or a number
+#' @export
+#' @examples 
+#' txt_feature("Red Devils", type = "is_capitalised")
+#' txt_feature("red devils", type = "is_capitalised")
+#' txt_feature("http://www.bnosac.be", type = "is_url")
+#' txt_feature("info@google.com", type = "is_email")
+#' txt_feature("hi there", type = "is_email")
+#' txt_feature("1230000", type = "is_number")
+#' txt_feature("123.15", type = "is_number")
+#' txt_feature("123,15", type = "is_number")
+#' txt_feature("123abc", type = "is_number")
+txt_feature <- function(x, type = c('is_capitalised', 'is_url', 'is_email', 'is_number')){
+  type <- match.arg(type)
+  missing <- is.na(x)
+  miss <- as.logical(NA)
+  if(type == "is_capitalised"){
+    result <- grepl("^[[:upper:]]", x)
+  }else if(type == "is_url"){
+    result <- grepl(pattern = "https?", x = x, ignore.case = TRUE)
+  }else if(type == "is_email"){
+    result <- grepl(".+@.+\\.", x)
+  }else if(type == "is_number"){
+    result <- grepl("^[[:digit:].,]+$", x)
+  }
+  result[missing] <- miss
+  result
+}

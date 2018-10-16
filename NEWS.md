@@ -1,6 +1,7 @@
 # CHANGES IN crfsuite VERSION 0.2
 
 - Fix for as.crf when loaded from file and adding more arguments than just the file
+- added txt_feature as a simple feature extraction to identify if a word is capitalised, an email, an url or a number
 
 # CHANGES IN crfsuite VERSION 0.1.1
 
