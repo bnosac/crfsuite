@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.3
+
+- Add functionalities to allow to evaluate a model and tune hyperparameters of a crfsuite model
+
 # CHANGES IN crfsuite VERSION 0.2
 
 - Fix for as.crf when loaded from file and adding more arguments than just the file
