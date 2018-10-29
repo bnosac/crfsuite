@@ -17,14 +17,14 @@ For users unfamiliar with Conditional Random Field (CRF) models, you can read th
 
 For detailed documentation on how to build your own CRF tagger for doing NER / Chunking. Look to the vignette.
 
-```{r}
+```r
 library(crfsuite)
 vignette("crfsuite-nlp", package = "crfsuite")
 ```
 
 #### Short example
 
-```{r}
+```r
 library(crfsuite)
 
 ## Get example training data + enrich with token and part of speech 2 words before/after each token
