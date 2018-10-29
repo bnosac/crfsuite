@@ -29,7 +29,8 @@ library(crfsuite)
 
 ## Get example training data + enrich with token and part of speech 2 words before/after each token
 x <- ner_download_modeldata("conll2002-nl")
-x <- crf_cbind_attributes(x, terms = c("token", "pos"), by = c("doc_id", "sentence_id"), 
+x <- crf_cbind_attributes(x, 
+                          terms = c("token", "pos"), by = c("doc_id", "sentence_id"), 
                           from = -2, to = 2, ngram_max = 3, sep = "-")
 
 ## Split in train/test set
@@ -57,7 +58,8 @@ table(scores$label)
 
 The package itself does not contain any models to do NER or Chunking. It's a package which facilitates creating **your own CRF model** for doing Named Entity Recognition or Chunking **on your own data** with your **own categories**.
 
-In order to facilitate creating training data on your own data, a shiny app is made available in this R package which allows you to easily tag your own chunks of text, with your own categories. More details can be found in the vignette `vignette("crfsuite-nlp", package = "crfsuite")`.
+In order to facilitate creating training data of your own text, a shiny app is made available in this R package which allows you to easily tag your own chunks of text, using your own categories. 
+More details about how to launch the app, which data is needed for building a model, how to start to build and use your model - read the vignette *in detail*: `vignette("crfsuite-nlp", package = "crfsuite")`.
 
 ![](vignettes/app-screenshot.png)
 
