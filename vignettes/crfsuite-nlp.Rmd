@@ -151,7 +151,7 @@ install.packages("flexdashboard")
 And run the app with
 
 ```
-rmarkdown::run(file = system.file(package = "crfsuite", "app", "annnotation.Rmd"))
+rmarkdown::run(file = system.file(package = "crfsuite", "app", "annotation.Rmd"))
 ```
 
 The app was developed with shiny 1.0.5, flexdashboard 0.5.1.1 and rmarkdown 1.6 
