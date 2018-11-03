@@ -4,7 +4,7 @@ library(crfsuite)
 ##
 ## Get training/test data
 ##
-x         <- ner_download_modeldata("conll2002-nl", docs = 1000)
+x         <- ner_download_modeldata("conll2002-nl")
 x$pos     <- txt_sprintf("Parts of Speech: %s", x$pos)
 x$token   <- txt_sprintf("Token: %s", x$token)
 crf_train <- subset(x, data == "ned.train", select = c("doc_id", "token", "pos", "label"))
@@ -32,17 +32,18 @@ if(FALSE){
 }
 
 ## Split in train/test according to doc_id
+set.seed(123456789)
 folds <- groupKFold(group = crf_train$doc_id, k = 2)
 feats <- grep("token|pos", colnames(crf_train), value=TRUE)
 tuning <- train(x = crf_train[, c("doc_id", feats)], y = crf_train$label, 
            method = crf_caretmethod[["lbfgs"]], 
            metric = "F1", maximize = TRUE,
-           trControl = trainControl(index = folds, summaryFunction = function(data, ...){
-             overview <- confusionMatrix(data$obs, data$pred, mode = "prec_recall")
-             overview <- overview$byClass[, c("Precision", "Recall", "F1")]
-             overview <- overview[!rownames(overview) %in% "Class: O", ]
-             overview <- colMeans(overview, na.rm=TRUE)
-             overview <- ifelse(is.na(overview), 0, overview)
+           trControl = trainControl(index = folds, summaryFunction = function(data, lev, ...){
+             overview <- crf_evaluation(pred = data$obs, obs = data$pred, labels = lev)
+             overview <- subset(overview, label != "O")
+             overview <- c(Precision = weighted.mean(overview$precision, w = overview$support, na.rm=TRUE),
+                           Recall = weighted.mean(overview$recall, w = overview$support, na.rm=TRUE),
+                           F1 = weighted.mean(overview$f1, w = overview$support, na.rm=TRUE))
              overview
            }),
            tuneGrid = expand.grid(method = "lbfgs", 
