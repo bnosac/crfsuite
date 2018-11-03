@@ -70,8 +70,8 @@ as_2d_table <- function(x, positive){
 #' crf_evaluation(pred = pred, obs = obs, 
 #'                labels = c("ORG", "LOC", "PER", "MISC", "O"))
 #' }
-crf_evaluation <- function(pred, obs, labels = na.exclude(unique(c(pred, obs)))){
-  levs <- na.exclude(unique(c(pred, obs)))
+crf_evaluation <- function(pred, obs, labels = na.exclude(unique(c(as.character(pred), as.character(obs))))){
+  levs <- na.exclude(unique(c(as.character(pred), as.character(obs))))
   levs <- setdiff(levs, labels)
   if(length(levs) > 0){
     stop(sprintf("More levels in the data then in labels, namely: %s", paste(levs, collapse = ", ")))
@@ -85,7 +85,7 @@ crf_evaluation <- function(pred, obs, labels = na.exclude(unique(c(pred, obs))))
     tab2d$recall <- tab2d$tp / tab2d$p
     tab2d$f1 <- 1 / (0.5 * 1 / tab2d$precision + 0.5 * 1 / tab2d$recall)
     tab2d$support <- tab2d$p
-    tab2d[c("precision", "recall", "f1")] <- lapply(tab2d[c("precision", "recall", "f1")], FUN=function(x) ifelse(is.infinite(x), NA_real_, x))
+    tab2d[c("precision", "recall", "f1")] <- lapply(tab2d[c("precision", "recall", "f1")], FUN=function(x) ifelse(is.infinite(x) | is.nan(x), NA_real_, x))
     tab2d <- tab2d[c("precision", "recall", "f1", "support")]
   })
   names(result) <- labels

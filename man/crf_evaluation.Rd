@@ -4,7 +4,8 @@
 \alias{crf_evaluation}
 \title{Basic classification evaluation metrics for multi-class labelling}
 \usage{
-crf_evaluation(pred, obs, labels = na.exclude(unique(c(pred, obs))))
+crf_evaluation(pred, obs, labels = na.exclude(unique(c(as.character(pred),
+  as.character(obs)))))
 }
 \arguments{
 \item{pred}{a factor with predictions}
