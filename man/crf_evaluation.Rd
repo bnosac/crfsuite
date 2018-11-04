@@ -5,7 +5,7 @@
 \title{Basic classification evaluation metrics for multi-class labelling}
 \usage{
 crf_evaluation(pred, obs, labels = na.exclude(unique(c(as.character(pred),
-  as.character(obs)))))
+  as.character(obs)))), labels_overall = setdiff(labels, "O"))
 }
 \arguments{
 \item{pred}{a factor with predictions}
@@ -13,9 +13,16 @@ crf_evaluation(pred, obs, labels = na.exclude(unique(c(as.character(pred),
 \item{obs}{a factor with gold labels}
 
 \item{labels}{a character vector of possible values that \code{pred} and \code{obs} can take. Defaults to the values in the data}
+
+\item{labels_overall}{a character vector of either labels which is either the same as \code{labels} or a subset of \code{labels} in order to compute a weighted average of the by-label statistics}
 }
 \value{
-a data.frame with the precision, recall, F1 score and support for each label
+a list with 2 elements:
+\enumerate{
+\item{bylabel: data.frame with the precision, recall, F1 score and support for each label}
+\item{overall: a vector with the overall accuracy and the precision, recall and F1 score weighted by the support 
+for all the labels provided in \code{labels_overall} as well as just the average of these 3 metrics giving equal weight to each label}
+}
 }
 \description{
 The precision, recall, F1 measure and support metrics are provided for each label in a one-versus rest setting.

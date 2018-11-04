@@ -26,7 +26,13 @@ as_2d_table <- function(x, positive){
 #' @param pred a factor with predictions 
 #' @param obs a factor with gold labels
 #' @param labels a character vector of possible values that \code{pred} and \code{obs} can take. Defaults to the values in the data
-#' @return a data.frame with the precision, recall, F1 score and support for each label
+#' @param labels_overall a character vector of either labels which is either the same as \code{labels} or a subset of \code{labels} in order to compute a weighted average of the by-label statistics
+#' @return a list with 2 elements:
+#' \enumerate{
+#' \item{bylabel: data.frame with the precision, recall, F1 score and support for each label}
+#' \item{overall: a vector with the overall accuracy and the precision, recall and F1 score weighted by the support 
+#' for all the labels provided in \code{labels_overall} as well as just the average of these 3 metrics giving equal weight to each label}
+#' }
 #' @export
 #' @examples
 #' pred <- sample(LETTERS, 1000, replace = TRUE)
@@ -70,7 +76,9 @@ as_2d_table <- function(x, positive){
 #' crf_evaluation(pred = pred, obs = obs, 
 #'                labels = c("ORG", "LOC", "PER", "MISC", "O"))
 #' }
-crf_evaluation <- function(pred, obs, labels = na.exclude(unique(c(as.character(pred), as.character(obs))))){
+crf_evaluation <- function(pred, obs, 
+                           labels = na.exclude(unique(c(as.character(pred), as.character(obs)))),
+                           labels_overall = setdiff(labels, "O")){
   levs <- na.exclude(unique(c(as.character(pred), as.character(obs))))
   levs <- setdiff(levs, labels)
   if(length(levs) > 0){
@@ -91,5 +99,16 @@ crf_evaluation <- function(pred, obs, labels = na.exclude(unique(c(as.character(
   names(result) <- labels
   result <- data.table::rbindlist(result, idcol = "label")
   result <- data.table::setDF(result)
-  result
+  
+  accuracy <- as.data.frame(tab, responseName = "n")
+  overview <- result[result$label %in% labels_overall, ]
+  overview <- c(
+    accuracy = sum(accuracy$n[accuracy$prediction == accuracy$gold]) / sum(tab, na.rm=TRUE),
+    precision = weighted.mean(overview$precision, w = overview$support, na.rm=TRUE),
+    recall = weighted.mean(overview$recall, w = overview$support, na.rm=TRUE),
+    f1 = weighted.mean(overview$f1, w = overview$support, na.rm=TRUE),
+    precision_mean = mean(overview$precision, na.rm=TRUE),
+    recall_mean = mean(overview$recall, na.rm=TRUE),
+    f1_mean = mean(overview$f1, na.rm=TRUE))
+  list(bylabel = result, overall = overview)
 }

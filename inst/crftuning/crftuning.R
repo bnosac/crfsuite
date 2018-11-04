@@ -40,7 +40,7 @@ tuning <- train(x = crf_train[, c("doc_id", feats)], y = crf_train$label,
            metric = "F1", maximize = TRUE,
            trControl = trainControl(index = folds, summaryFunction = function(data, lev, ...){
              overview <- crf_evaluation(pred = data$obs, obs = data$pred, labels = lev)
-             overview <- subset(overview, label != "O")
+             overview <- subset(overview$bylabel, label != "O")
              overview <- c(Precision = weighted.mean(overview$precision, w = overview$support, na.rm=TRUE),
                            Recall = weighted.mean(overview$recall, w = overview$support, na.rm=TRUE),
                            F1 = weighted.mean(overview$f1, w = overview$support, na.rm=TRUE))
