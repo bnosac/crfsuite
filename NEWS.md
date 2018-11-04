@@ -1,6 +1,7 @@
 # CHANGES IN crfsuite VERSION 0.3
 
 - Add functionalities to allow to evaluate a model and tune hyperparameters of a crfsuite model
+- Expand txt_feature to allow it to get prefix/suffix of strings
 
 # CHANGES IN crfsuite VERSION 0.2
 

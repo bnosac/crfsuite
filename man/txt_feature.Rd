@@ -4,15 +4,19 @@
 \alias{txt_feature}
 \title{Extract basic text features which are useful for entity recognition}
 \usage{
-txt_feature(x, type = c("is_capitalised", "is_url", "is_email", "is_number"))
+txt_feature(x, type = c("is_capitalised", "is_url", "is_email", "is_number",
+  "prefix", "suffix"), n = 4)
 }
 \arguments{
 \item{x}{a character vector}
 
-\item{type}{a character string, which can be one of 'is_capitalised', 'is_url', 'is_email', 'is_number'}
+\item{type}{a character string, which can be one of 'is_capitalised', 'is_url', 'is_email', 'is_number', 'prefix', 'suffix'}
+
+\item{n}{for type 'prefix' or 'suffix', the number of characters of the prefix/suffix}
 }
 \value{
-a logical vector of the same length as \code{x}, indicating if \code{x} is capitalised, a url, an email or a number
+For type 'is_capitalised', 'is_url', 'is_email', 'is_number': a logical vector of the same length as \code{x}, indicating if \code{x} is capitalised, a url, an email or a number\cr
+For type 'prefix', 'suffix': a character vector of the same length as \code{x}, containing the prefix or suffix \code{n} number of characters
 }
 \description{
 Extract basic text features which are useful for entity recognition
@@ -27,4 +31,6 @@ txt_feature("1230000", type = "is_number")
 txt_feature("123.15", type = "is_number")
 txt_feature("123,15", type = "is_number")
 txt_feature("123abc", type = "is_number")
+txt_feature("abcdefghijklmnopqrstuvwxyz", type = "prefix", n = 3)
+txt_feature("abcdefghijklmnopqrstuvwxyz", type = "suffix", n = 3)
 }
