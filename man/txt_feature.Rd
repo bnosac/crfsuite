@@ -16,7 +16,7 @@ txt_feature(x, type = c("is_capitalised", "is_url", "is_email", "is_number",
 }
 \value{
 For type 'is_capitalised', 'is_url', 'is_email', 'is_number': a logical vector of the same length as \code{x}, indicating if \code{x} is capitalised, a url, an email or a number\cr
-For type 'prefix', 'suffix': a character vector of the same length as \code{x}, containing the prefix or suffix \code{n} number of characters
+For type 'prefix', 'suffix': a character vector of the same length as \code{x}, containing the prefix or suffix \code{n} number of characters of \code{x}
 }
 \description{
 Extract basic text features which are useful for entity recognition
