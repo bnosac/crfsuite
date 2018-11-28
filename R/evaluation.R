@@ -22,16 +22,16 @@ as_2d_table <- function(x, positive){
 }
 
 #' @title Basic classification evaluation metrics for multi-class labelling
-#' @description The precision, recall, F1 measure and support metrics are provided for each label in a one-versus rest setting.
+#' @description The precision, recall, specificity, F1 measure and support metrics are provided for each label in a one-versus rest setting.
 #' @param pred a factor with predictions 
 #' @param obs a factor with gold labels
 #' @param labels a character vector of possible values that \code{pred} and \code{obs} can take. Defaults to the values in the data
 #' @param labels_overall a character vector of either labels which is either the same as \code{labels} or a subset of \code{labels} in order to compute a weighted average of the by-label statistics
 #' @return a list with 2 elements:
 #' \enumerate{
-#' \item{bylabel: data.frame with the precision, recall, F1 score and support for each label}
-#' \item{overall: a vector with the overall accuracy and the precision, recall and F1 score weighted by the support 
-#' for all the labels provided in \code{labels_overall} as well as just the average of these 3 metrics giving equal weight to each label}
+#' \item{bylabel: data.frame with the precision, recall, specificity, F1 score and support for each label}
+#' \item{overall: a vector with the overall accuracy and the precision, recall, specificity and F1 score weighted by the support 
+#' for all the labels provided in \code{labels_overall} as well as just the average of these 4 metrics giving equal weight to each label}
 #' }
 #' @export
 #' @examples
@@ -92,9 +92,10 @@ crf_evaluation <- function(pred, obs,
     tab2d$precision <- tab2d$tp / (tab2d$tp + tab2d$fp)
     tab2d$recall <- tab2d$tp / tab2d$p
     tab2d$f1 <- 1 / (0.5 * 1 / tab2d$precision + 0.5 * 1 / tab2d$recall)
+    tab2d$specificity <- tab2d$tn / tab2d$n
     tab2d$support <- tab2d$p
-    tab2d[c("precision", "recall", "f1")] <- lapply(tab2d[c("precision", "recall", "f1")], FUN=function(x) ifelse(is.infinite(x) | is.nan(x), NA_real_, x))
-    tab2d <- tab2d[c("precision", "recall", "f1", "support")]
+    tab2d[c("precision", "recall", "specificity", "f1")] <- lapply(tab2d[c("precision", "recall", "specificity", "f1")], FUN=function(x) ifelse(is.infinite(x) | is.nan(x), NA_real_, x))
+    tab2d <- tab2d[c("precision", "recall", "specificity", "f1", "support")]
   })
   names(result) <- labels
   result <- data.table::rbindlist(result, idcol = "label")
@@ -106,9 +107,11 @@ crf_evaluation <- function(pred, obs,
     accuracy = sum(accuracy$n[accuracy$prediction == accuracy$gold]) / sum(tab, na.rm=TRUE),
     precision = weighted.mean(overview$precision, w = overview$support, na.rm=TRUE),
     recall = weighted.mean(overview$recall, w = overview$support, na.rm=TRUE),
+    specificity = weighted.mean(overview$specificity, w = overview$support, na.rm=TRUE),
     f1 = weighted.mean(overview$f1, w = overview$support, na.rm=TRUE),
     precision_mean = mean(overview$precision, na.rm=TRUE),
     recall_mean = mean(overview$recall, na.rm=TRUE),
+    specificity_mean = mean(overview$specificity, na.rm=TRUE),
     f1_mean = mean(overview$f1, na.rm=TRUE))
   list(bylabel = result, overall = overview)
 }
