@@ -18,14 +18,19 @@ crf_evaluation(pred, obs, labels = na.exclude(unique(c(as.character(pred),
 }
 \value{
 a list with 2 elements:
-\enumerate{
-\item{bylabel: data.frame with the precision, recall, specificity, F1 score and support for each label}
-\item{overall: a vector with the overall accuracy and the precision, recall, specificity and F1 score weighted by the support 
-for all the labels provided in \code{labels_overall} as well as just the average of these 4 metrics giving equal weight to each label}
+\itemize{
+\item{bylabel: data.frame with the accuracy, precision, recall, specificity, F1 score and support (number of occurrences) for each label}
+\item{overall: a vector containing 
+\itemize{
+\item{the overall accuracy}
+\item{the metrics precision, recall, specificity and F1 score which are weighted averages of these metrics from list element \code{bylabel}, where the weight is the support}
+\item{the metrics precision, recall, specificity and F1 score which are averages of these metrics from list element \code{bylabel} giving equal weight to each label}
+}
+}
 }
 }
 \description{
-The precision, recall, specificity, F1 measure and support metrics are provided for each label in a one-versus rest setting.
+The accuracy, precision, recall, specificity, F1 measure and support metrics are provided for each label in a one-versus the rest setting.
 }
 \examples{
 pred <- sample(LETTERS, 1000, replace = TRUE)
