@@ -35,7 +35,8 @@ if(FALSE){
 set.seed(123456789)
 folds <- groupKFold(group = crf_train$doc_id, k = 2)
 feats <- grep("token|pos", colnames(crf_train), value=TRUE)
-tuning <- train(x = crf_train[, c("doc_id", feats)], y = crf_train$label, 
+tuning <- train(x = crf_train[, c("doc_id", feats)], 
+                y = crf_train$label, 
            method = crf_caretmethod[["lbfgs"]], 
            metric = "F1", maximize = TRUE,
            trControl = trainControl(index = folds, summaryFunction = function(data, lev, ...){
@@ -47,10 +48,10 @@ tuning <- train(x = crf_train[, c("doc_id", feats)], y = crf_train$label,
              overview
            }),
            tuneGrid = expand.grid(method = "lbfgs", 
-                                  max_iterations = 200,
-                                  c1 = c(0, 1),
-                                  c2 = c(0, 1),
-                                  feature.minfreq = c(5), 
+                                  max_iterations = 1000,
+                                  c1 = c(0, 0.2, 0.5, 1, 2),
+                                  c2 = c(0, 0.2, 0.5, 1, 2),
+                                  feature.minfreq = c(1), 
                                   feature.possible_states = FALSE,
                                   feature.possible_transitions = FALSE,
                                   num_memories = 6,
