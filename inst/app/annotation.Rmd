@@ -34,6 +34,10 @@ tags$script('
   }
   document.onmouseup = document.onkeyup = document.onselectionchange = function() {
     var selection = getSelectionText();
+    var ui_txt_id = document.getElementById("ui_txt");
+    //var ui_txt_text = ui_txt_id.innerText;
+    var ui_txt_text = ui_txt_id.textContent;
+    Shiny.onInputChange("visible_text", ui_txt_text);
     Shiny.onInputChange("highlighted_text", selection.text);
     Shiny.onInputChange("highlighted_offset", selection.offset);
   };
@@ -74,13 +78,13 @@ save_annotation <- function(result){
     }
     out <- rbind(out, data.frame(result, stringsAsFactors = FALSE))
     out$chunk_id <- seq_len(nrow(out))
-    out <- out[, c("annotation_time", "doc_id", "text", "start", "end", "chunk_id", "chunk_entity", "chunk")]
+    out <- out[, c("annotation_time", "doc_id", "text", "text_visible", "start", "end", "chunk_id", "chunk_entity", "chunk")]
     class(out) <- c("chunkrange", "data.frame")
     saveRDS(out, file = dashdata$save_as)
   }else{
     out <- data.frame(result, stringsAsFactors = FALSE)
     out$chunk_id <- seq_len(nrow(out))
-    out <- out[, c("annotation_time", "doc_id", "text", "start", "end", "chunk_id", "chunk_entity", "chunk")]
+    out <- out[, c("annotation_time", "doc_id", "text", "text_visible", "start", "end", "chunk_id", "chunk_entity", "chunk")]
     class(out) <- c("chunkrange", "data.frame")
     saveRDS(out, file = dashdata$save_as)
   }
@@ -108,6 +112,7 @@ currentText <- reactive({
   result <- list(annotation_time = Sys.time(), 
                doc_id = info$doc_id,
                text = info$text,
+               text_visible = info$text,
                start = NA_integer_,
                end = NA_integer_,
                chunk_id = NA_integer_,
@@ -167,6 +172,7 @@ observeEvent(input$ui_save, {
   result <- list(annotation_time = Sys.time(), 
                doc_id = info$doc_id,
                text = info$text,
+               text_visible = input$visible_text,
                start = start,
                end = end,
                chunk_id = NA_integer_,
