@@ -16,6 +16,7 @@ Description: Wraps the 'CRFsuite' library <https://github.com/chokkan/crfsuite> 
     for named entity recognition, text chunking, part of speech tagging, intent recognition or classification of any category you have in mind. Next to training, a small web application
     is included in the package to allow you to easily construct training data.
 License: BSD_3_clause + file LICENSE
+URL: https://github.com/bnosac/crfsuite
 Depends: R (>= 2.10)
 Imports: Rcpp, data.table (>= 1.9.6), utils, tools, stats
 Suggests: udpipe, knitr
