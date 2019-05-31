@@ -25,7 +25,7 @@ Please visit the information on these repositories first before you use these da
 This is only used to reduce CRAN R CMD check training time in the examples of this R package.}
 }
 \value{
-a data.frame with training data for a Named Entity Recognition task
+a data.frame with training data for a Named Entity Recognition task or an object of try-error in case of failure of downloading the data
 }
 \description{
 Download training data for doing Named Entity Recognition (NER)

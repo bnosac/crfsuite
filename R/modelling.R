@@ -32,34 +32,40 @@
 #' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
 #' @export
 #' @seealso \code{\link{predict.crf}}
-#' @examples 
-#' ##
-#' ## Build Named Entity Recognition model on tiny - 10 docs subset of conll2002-nl
-#' ##
-#' x         <- ner_download_modeldata("conll2002-nl", docs = 10)
-#' x$pos     <- txt_sprintf("Parts of Speech: %s", x$pos)
-#' x$token   <- txt_sprintf("Token: %s", x$token)
-#' crf_train <- subset(x, data == "ned.train")
-#' crf_test  <- subset(x, data == "testa")
+#' @examples
+#' ## Download modeldata (conll 2002 shared task in Dutch)
+#' \dontrun{
+#' x         <- ner_download_modeldata("conll2002-nl")
+#' }
+#' # for CRAN only - word on a subset of the data
+#' x <- ner_download_modeldata("conll2002-nl", docs = 10)
+#' if(is.data.frame(x)){
+#'   ##
+#'   ## Build Named Entity Recognition model on conll2002-nl
+#'   ##
+#'   x$pos     <- txt_sprintf("Parts of Speech: %s", x$pos)
+#'   x$token   <- txt_sprintf("Token: %s", x$token)
+#'   crf_train <- subset(x, data == "ned.train")
+#'   crf_test  <- subset(x, data == "testa")
 #' 
-#' model <- crf(y = crf_train$label, 
-#'              x = crf_train[, c("token", "pos")], 
-#'              group = crf_train$doc_id, 
-#'              method = "lbfgs", 
-#'              options = list(max_iterations = 3, feature.minfreq = 5, c1 = 0, c2 = 1)) 
-#' model
-#' stats <- summary(model, "modeldetails.txt")
-#' stats
-#' plot(stats$iterations$loss)
+#'   model <- crf(y = crf_train$label, 
+#'                x = crf_train[, c("token", "pos")], 
+#'                group = crf_train$doc_id, 
+#'                method = "lbfgs", 
+#'                options = list(max_iterations = 3, feature.minfreq = 5, 
+#'                               c1 = 0, c2 = 1)) 
+#'   model
+#'   stats <- summary(model, "modeldetails.txt")
+#'   stats
+#'   plot(stats$iterations$loss)
 #' 
-#' ## Use the CRF model to label a sequence
-#' scores <- predict(model, 
-#'                   newdata = crf_test[, c("token", "pos")], 
-#'                   group = crf_test$doc_id)
-#' head(scores)
-#' crf_test$label <- scores$label
-#' 
-#' 
+#'   ## Use the CRF model to label a sequence
+#'   scores <- predict(model, 
+#'                     newdata = crf_test[, c("token", "pos")], 
+#'                     group = crf_test$doc_id)
+#'   head(scores)
+#'   crf_test$label <- scores$label
+#' }
 #' \dontrun{
 #' ##
 #' ## More detailed example where text data was annotated with the webapp in the package
