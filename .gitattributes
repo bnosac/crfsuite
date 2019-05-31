@@ -1,0 +1,6 @@
+## Get rid of 'Found the following sources/headers with CR or CRLF line endings'
+## The following files will always have LF line endings on checkout
+*.hpp text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+Makevars text eol=lf
