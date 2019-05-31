@@ -65,6 +65,10 @@
 #'                     group = crf_test$doc_id)
 #'   head(scores)
 #'   crf_test$label <- scores$label
+#'   
+#'   ## cleanup for CRAN
+#'   if(file.exists(model$file_model)) file.remove(model$file_model)
+#'   if(file.exists("modeldetails.txt")) file.remove("modeldetails.txt")
 #' }
 #' \dontrun{
 #' ##
@@ -74,13 +78,10 @@
 #' ##
 #' library(udpipe)
 #' data(airbnb_chunks, package = "crfsuite")
-#' udmodel <- udpipe_download_model("dutch-lassysmall")
-#' udmodel <- udpipe_load_model(udmodel$file_model)
-#' airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
-#' airbnb_tokens <- udpipe_annotate(udmodel, 
-#'                                  x = airbnb_tokens$text, 
-#'                                  doc_id = airbnb_tokens$doc_id)
-#' airbnb_tokens <- as.data.frame(airbnb_tokens)
+#' udmodel       <- udpipe_download_model("dutch-lassysmall")
+#' udmodel       <- udpipe_load_model(udmodel$file_model)
+#' airbnb_tokens <- udpipe(x = unique(airbnb_chunks[, c("doc_id", "text")]), 
+#'                         object = udmodel)
 #' x <- merge(airbnb_chunks, airbnb_tokens)
 #' x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
 #' model <- crf(y = x$chunk_entity, 
@@ -94,12 +95,7 @@
 #'                   newdata = x[, grep("upos|lemma", colnames(x))], 
 #'                   group = x$doc_id)
 #' head(scores)
-#' 
-#' ## cleanup for CRAN
-#' file.remove(udmodel$file)
 #' }
-#' file.remove(model$file_model)
-#' file.remove("modeldetails.txt")
 crf <- function(x, y, group, 
                 method = c("lbfgs", "l2sgd", "averaged-perceptron", "passive-aggressive", "arow"), 
                 options = crf_options(method)$default, 

@@ -58,13 +58,18 @@ The attributes of the observations are mostly something like the term itself, th
 As an example, let's get some data in Dutch for doing Named Entity Recognition which was distributed as part of the CoNLL-2002 shared task challenge. 
 This dataset contains 1 row per term and provides entity labels as well as the parts of speech tag for each term. 
 
+```{r, message = FALSE, warning=FALSE, error=FALSE, results='hide', echo=FALSE}
+library(udpipe)
+udmodel <- udpipe_download_model("dutch")
+```
+
 ```{r, message = FALSE, warning=FALSE, error=FALSE, results='hide'}
 library(crfsuite)
 x <- ner_download_modeldata("conll2002-nl")
 ```
 
 ```{r, echo=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, comment = NA, eval = inherits(x, "data.frame"))
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, comment = NA, eval = inherits(x, "data.frame") && !udmodel$download_failed)
 ```
 
 ```{r}
@@ -216,15 +221,15 @@ table(airbnb_chunks$chunk_entity)
 
 In order to build the training dataset, we need to have data at the token level. In the example below, this is done using the udpipe R package (https://CRAN.R-project.org/package=udpipe).
 
-```{r}
+```{r, eval=FALSE}
 ## Annotate text data with udpipe (version >= 0.7)
 udmodel <- udpipe_download_model("dutch")
 udmodel <- udpipe_load_model(udmodel$file_model)
+```
+
+```{r}
 airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
-airbnb_tokens <- udpipe_annotate(udmodel, 
-                                 x = airbnb_tokens$text, 
-                                 doc_id = airbnb_tokens$doc_id)
-airbnb_tokens <- as.data.frame(airbnb_tokens, detailed = TRUE)
+airbnb_tokens <- udpipe(x = airbnb_tokens, object = udmodel)
 str(airbnb_tokens)
 ```
 
@@ -251,9 +256,9 @@ barplot(table(scores$label[scores$label != "O"]), col = "royalblue", cex.names =
 ```
 
 ```{r, echo=FALSE}
-invisible(file.remove("annotator.crfsuite"))
-invisible(file.remove("tagger.crfsuite"))
-invisible(file.remove(udmodel$file))
+invisible(if(file.exists("annotator.crfsuite")) file.remove("annotator.crfsuite"))
+invisible(if(file.exists("tagger.crfsuite")) file.remove("tagger.crfsuite"))
+invisible(if(file.exists(udmodel$file)) file.remove(udmodel$file))
 ```
 
 Now up to you.
