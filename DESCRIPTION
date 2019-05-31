@@ -21,5 +21,4 @@ Imports: Rcpp, data.table (>= 1.9.6), utils, tools, stats
 Suggests: udpipe, knitr
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
-SystemRequirements: GNU make
 VignetteBuilder: knitr

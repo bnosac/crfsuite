@@ -1,11 +1,11 @@
 CXX_STD      = CXX11
 PKG_CPPFLAGS = -I./cqdb/include -I./crf/src -I./liblbfgs/include -I./include
 
-SOURCES = cqdb/src/cqdb.c cqdb/src/lookup3.c
-SOURCES += liblbfgs/lib/lbfgs.c
-SOURCES += crf/src/crf1d_context.c crf/src/crf1d_encode.c crf/src/crf1d_feature.c crf/src/crf1d_model.c crf/src/crf1d_tag.c crf/src/crfsuite.c crf/src/crfsuite_train.c crf/src/dataset.c crf/src/dictionary.c crf/src/holdout.c crf/src/logging.c crf/src/params.c crf/src/quark.c crf/src/rumavl.c crf/src/train_arow.c crf/src/train_averaged_perceptron.c crf/src/train_l2sgd.c crf/src/train_lbfgs.c crf/src/train_passive_aggressive.c
-SOURCES += rcpp_crfsuite.cpp
-SOURCES += RcppExports.cpp
+SOURCES = cqdb/src/cqdb.c cqdb/src/lookup3.c  \
+          liblbfgs/lib/lbfgs.c  \
+          crf/src/crf1d_context.c crf/src/crf1d_encode.c crf/src/crf1d_feature.c crf/src/crf1d_model.c crf/src/crf1d_tag.c crf/src/crfsuite.c crf/src/crfsuite_train.c crf/src/dataset.c crf/src/dictionary.c crf/src/holdout.c crf/src/logging.c crf/src/params.c crf/src/quark.c crf/src/rumavl.c crf/src/train_arow.c crf/src/train_averaged_perceptron.c crf/src/train_l2sgd.c crf/src/train_lbfgs.c crf/src/train_passive_aggressive.c  \
+          rcpp_crfsuite.cpp  \
+          RcppExports.cpp
 
 OBJ1    = $(SOURCES:.c=.o)
 OBJ2    = $(OBJ1:.hpp=.o)
