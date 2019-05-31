@@ -2,6 +2,10 @@
 
 - Add functionalities to allow to evaluate a model and tune hyperparameters of a crfsuite model
 - Expand txt_feature to allow it to get prefix/suffix of strings
+- Shiny app now does not show htmlOutput but textOutput + outputs extra field called 'text_visible' usefull if you change textOutput("ui_txt") to htmlOutput("ui_txt") in the app
+- ner_download_modeldata now returns an object of try-error if modeldata could not be downloaded from github. This in order to be more gracefull on CRAN machines in case of internet connectivity issues
+- add URL in decscription file
+- remove the GNU make as part of the SystemRequirements
 
 # CHANGES IN crfsuite VERSION 0.2
 
