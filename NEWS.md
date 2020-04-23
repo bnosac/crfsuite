@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.3.1
+
+- Change the flexdashboard application by adding links to download the annotations
+
 # CHANGES IN crfsuite VERSION 0.3
 
 - Add functionalities to allow to evaluate a model and tune hyperparameters of a crfsuite model

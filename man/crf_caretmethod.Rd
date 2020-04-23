@@ -4,7 +4,9 @@
 \name{crf_caretmethod}
 \alias{crf_caretmethod}
 \title{Functionality allowing to tune a crfsuite model using caret}
-\format{see details}
+\format{
+see details
+}
 \usage{
 crf_caretmethod
 }

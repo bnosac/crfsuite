@@ -4,12 +4,14 @@
 \alias{ner_download_modeldata}
 \title{CRF Training data: download training data for doing Named Entity Recognition (NER)}
 \usage{
-ner_download_modeldata(type = c("conll2002-nl", "conll2002-es", "GermanNER",
-  "wikiner-de-wp2", "wikiner-de-wp3", "wikiner-en-wp2", "wikiner-en-wp3",
-  "wikiner-es-wp2", "wikiner-es-wp3", "wikiner-fr-wp2", "wikiner-fr-wp3",
-  "wikiner-it-wp2", "wikiner-it-wp3", "wikiner-nl-wp2", "wikiner-nl-wp3",
-  "wikiner-pl-wp3", "wikiner-pt-wp3", "wikiner-ru-wp2", "wikiner-ru-wp3"),
-  docs = -Inf)
+ner_download_modeldata(
+  type = c("conll2002-nl", "conll2002-es", "GermanNER", "wikiner-de-wp2",
+    "wikiner-de-wp3", "wikiner-en-wp2", "wikiner-en-wp3", "wikiner-es-wp2",
+    "wikiner-es-wp3", "wikiner-fr-wp2", "wikiner-fr-wp3", "wikiner-it-wp2",
+    "wikiner-it-wp3", "wikiner-nl-wp2", "wikiner-nl-wp3", "wikiner-pl-wp3",
+    "wikiner-pt-wp3", "wikiner-ru-wp2", "wikiner-ru-wp3"),
+  docs = -Inf
+)
 }
 \arguments{
 \item{type}{a character string with the type of data to download. See the function usage for all possible values.

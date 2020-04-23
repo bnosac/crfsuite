@@ -158,6 +158,8 @@ To start the app, make sure you have the following packages installed.
 ```
 install.packages("shiny")
 install.packages("flexdashboard")
+install.packages("DT")
+install.packages("writexl")
 ```
 
 And run the app with
@@ -166,7 +168,7 @@ And run the app with
 rmarkdown::run(file = system.file(package = "crfsuite", "app", "annotation.Rmd"))
 ```
 
-The app was developed with shiny 1.0.5, flexdashboard 0.5.1.1 and rmarkdown 1.6 
+The app was developed with shiny 1.4.0.2, flexdashboard 0.5.1.1, DT 0.13, writexl 1.2 and rmarkdown 1.6 
 
 ![CRFSuite Shiny App](app-screenshot.png)
 

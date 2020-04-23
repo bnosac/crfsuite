@@ -4,8 +4,11 @@
 \alias{txt_feature}
 \title{Extract basic text features which are useful for entity recognition}
 \usage{
-txt_feature(x, type = c("is_capitalised", "is_url", "is_email", "is_number",
-  "prefix", "suffix"), n = 4)
+txt_feature(
+  x,
+  type = c("is_capitalised", "is_url", "is_email", "is_number", "prefix", "suffix"),
+  n = 4
+)
 }
 \arguments{
 \item{x}{a character vector}

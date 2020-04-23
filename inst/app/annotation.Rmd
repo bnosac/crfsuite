@@ -13,6 +13,7 @@ output:
 ```{r}
 library(shiny)
 library(flexdashboard)
+library(DT)
 tags$script('
   function getSelectionText() {
     var text = "";
@@ -47,7 +48,7 @@ dashdata$file <- "default"
 dashdata$save_as <- tempfile(pattern = sprintf("crfsuite_annotation_%s", format(Sys.time(), "%Y%m%d_%H%M%S")), fileext = ".rds")
 dashdata$categories <- c("OTHER")
 dashdata$rawdata <- data.frame(doc_id = c("introduction", "example"), text = c(
-"This tool allows to easily annnote parts of plain text with categories. Why?\n   o In order to facilitate getting a training dataset for constructing models with the crfsuite R package\n   o To allow to easily build statistical models for named entity recognition, chunking, parsing or intent classification\n\nHow to annotate?\n   o Select a part of the text, indicate which category your selection belongs to and press save.\n   o Done? Press 'Annotate another document' or go to the tab 'upload new set of documents' to provide your dataset to tag.\n\nStart trying this out by providing a list of categories in the tab 'Manage tagging categories', press on 'Annotate another document' and try it out. Once done, upload your own set of documents to tag in the tab 'Upload new set of documents'",
+"This tool allows to easily annnote parts of plain text with categories. Why?\n   o In order to facilitate getting a training dataset for constructing models with the crfsuite R package\n   o To allow to easily build statistical models for named entity recognition, chunking, parsing, code switching or intent classification\n\nHow to annotate?\n   o Select a part of the text, indicate which category your selection belongs to and press save.\n   o Done? Press 'Annotate another document' or go to the tab 'upload new set of documents' to provide your dataset to tag.\n\nStart trying this out by providing a list of categories in the tab 'Manage tagging categories', press on 'Annotate another document' and try it out. Once done, upload your own set of documents to tag in the tab 'Upload new set of documents'",
 
 #"<b>This tool allows to easily annnote parts of plain text with categories. Why?</b> <ul><li>In order to facilitate getting a training dataset for constructing models with the crfsuite R package</li><li>To allow to easily build statistical models for named entity recognition, chunking, parsing or intent classification</li></ul><b>How to annotate?</b><ol><li>Select a part of the text, indicate which category your selection belongs to and press save. </li><li>Done? Press 'Annotate another document' or go to the tab 'upload new set of documents' to provide your dataset to tag.</li></ol>Start trying this out by providing a list of categories in the tab 'Manage tagging categories', press on 'Annotate another document' and try it out. Once done, upload your own set of documents to tag in the tab 'Upload new set of documents'", 
 'The standard Lorem Ipsum passage, used since the 1500s
@@ -69,6 +70,8 @@ Section 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
 dashdata$current_row <- 0
 dashdata$total_rows <- nrow(dashdata$rawdata)
 current_rds <- reactiveVal("startup")
+clickedsave <- reactiveVal(value = 0)
+
 
 save_annotation <- function(result){
   if(length(result$doc_id) == 0 || length(result$chunk) == 0){
@@ -91,6 +94,9 @@ save_annotation <- function(result){
     class(out) <- c("chunkrange", "data.frame")
     saveRDS(out, file = dashdata$save_as)
   }
+  isolate({
+    clickedsave(clickedsave() + 1) 
+  })
   invisible(out)
 }
 ```
@@ -152,6 +158,45 @@ actionButton(inputId = "ui_next", label = "Annotate another document")
 radioButtons(inputId = "ui_tag", label = "Category of selected text", choices = dashdata$categories)
 actionButton(inputId = "ui_save", label = "Save")
 ```
+
+### Results
+
+```{r}
+downloadLink("ui_downloadresults_rds", label = "Download your work in .rds")
+output$ui_downloadresults_rds <- downloadHandler(
+  filename = function() {
+    sprintf("%s.rds", tools::file_path_sans_ext(basename(dashdata$save_as)))
+  },
+  content = function(filename) {
+    x <- readRDS(dashdata$save_as)
+    saveRDS(x, file = filename)
+  })
+```
+
+```{r}
+downloadLink("ui_downloadresults_csv", label = "Download your work in .csv")
+output$ui_downloadresults_csv <- downloadHandler(
+  filename = function() {
+    sprintf("%s.csv", tools::file_path_sans_ext(basename(dashdata$save_as)))
+  },
+  content = function(filename) {
+    x <- readRDS(dashdata$save_as)
+    write.csv(x, file = filename, na = "", row.names = FALSE)  
+  })
+```
+
+```{r}
+downloadLink("ui_downloadresults_xlsx", label = "Download your work in .xlsx")
+output$ui_downloadresults_xlsx <- downloadHandler(
+  filename = function() {
+    sprintf("%s.xlsx", tools::file_path_sans_ext(basename(dashdata$save_as)))
+  },
+  content = function(filename) {
+    x <- readRDS(dashdata$save_as)
+    writexl::write_xlsx(x = x, path = filename)
+  })
+```
+
 
 ## Column 1 {.tabset}
 
@@ -263,7 +308,7 @@ x <- data.frame(doc_id = c("doc1", "doc2"),
                 text = c("The salmon and the creme brulee at the Fishbone were delicious", 
                          "I went to see the Taj Mahal after climbing the Mount Everest"), 
                 stringsAsFactors = FALSE)
-saveRDS(x, file = "to-annotate.rds")
+saveRDS(x, file = "to_annotate.rds")
 ```
 
 
@@ -275,7 +320,7 @@ reactive({
   print(input$ui_tid_input$name)
   if(!is.null(input$ui_tid_input) && file.exists(input$ui_tid_input$datapath)){
     if(tools::file_ext(input$ui_tid_input$name) %in% c("rds", "RDS", "Rds")){
-      dashdata$save_as <<- sprintf("crfsuite_annotation_%s.rds", gsub(".rds$|.RDS$", "", input$ui_tid_input$name))
+      dashdata$save_as <<- sprintf("crfsuite_annotation_%s_%s.rds", format(Sys.time(), "%Y%m%d_%H%M%S"), gsub(".rds$|.RDS$", "", input$ui_tid_input$name))
       dashdata$rawdata <<- readRDS(input$ui_tid_input$datapath) 
       if(!inherits(dashdata$rawdata, "data.frame") || !all(c("doc_id", "text") %in% colnames(dashdata$rawdata))){
         showModal(modalDialog(title = "New data upload failed", 
@@ -301,12 +346,18 @@ reactive({
 ### Show results
 
 ```{r}
-dataTableOutput(outputId = "ui_taggeddata")
-output$ui_taggeddata <- renderDataTable({
-  input$ui_next
+DT::dataTableOutput(outputId = "ui_taggeddata")
+output$ui_taggeddata <- DT::renderDataTable({
+  #input$ui_next
+  i <- clickedsave()
   if(file.exists(dashdata$save_as)){
     data <- readRDS(dashdata$save_as)
     data <- data[, c("doc_id", "start", "end", "chunk_entity", "chunk")]
+    data$doc_id <- as.character(data$doc_id)
+    data$chunk_entity <- as.character(data$chunk_entity)
+    data$chunk <- as.character(data$chunk)
+    data$start <- as.integer(data$start)
+    data$end <- as.integer(data$end)
     data <- data[rev(seq_len(nrow(data))), ]
   }else{
     data <- data.frame(doc_id = character(), start = integer(), end = integer(), chunk_entity = character(), chunk = character(), stringsAsFactors = FALSE)
@@ -315,8 +366,8 @@ output$ui_taggeddata <- renderDataTable({
 }, options = list(pageLength = 10, lengthMenu = c(1, 2, 5, 10, 15, 20), rownames = FALSE))
 ```
 
-
 <!--
+
 # Config
 
 ##  {.tabset}

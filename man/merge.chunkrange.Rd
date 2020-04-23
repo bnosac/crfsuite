@@ -4,8 +4,7 @@
 \alias{merge.chunkrange}
 \title{CRF Training data construction: add chunk entity category to a tokenised dataset}
 \usage{
-\method{merge}{chunkrange}(x, y, by.x = "doc_id", by.y = "doc_id",
-  default_entity = "O", ...)
+\method{merge}{chunkrange}(x, y, by.x = "doc_id", by.y = "doc_id", default_entity = "O", ...)
 }
 \arguments{
 \item{x}{an object of class \code{chunkrange}. A \code{chunkrange} is just a data.frame which contains 

@@ -4,8 +4,15 @@
 \alias{crf_cbind_attributes}
 \title{Enrich a data.frame by adding frequently used CRF attributes}
 \usage{
-crf_cbind_attributes(data, terms, by, from = -2, to = 2, ngram_max = 3,
-  sep = "-")
+crf_cbind_attributes(
+  data,
+  terms,
+  by,
+  from = -2,
+  to = 2,
+  ngram_max = 3,
+  sep = "-"
+)
 }
 \arguments{
 \item{data}{a data.frame which will be coerced to a data.table (cbinding will be done by reference on the existing data.frame)}

@@ -4,9 +4,17 @@
 \alias{crf}
 \title{Linear-chain Conditional Random Field}
 \usage{
-crf(x, y, group, method = c("lbfgs", "l2sgd", "averaged-perceptron",
-  "passive-aggressive", "arow"), options = crf_options(method)$default,
-  file = "annotator.crfsuite", trace = FALSE, FUN = identity, ...)
+crf(
+  x,
+  y,
+  group,
+  method = c("lbfgs", "l2sgd", "averaged-perceptron", "passive-aggressive", "arow"),
+  options = crf_options(method)$default,
+  file = "annotator.crfsuite",
+  trace = FALSE,
+  FUN = identity,
+  ...
+)
 }
 \arguments{
 \item{x}{a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix.

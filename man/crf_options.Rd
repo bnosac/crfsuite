@@ -4,8 +4,9 @@
 \alias{crf_options}
 \title{Conditional Random Fields parameters}
 \usage{
-crf_options(method = c("lbfgs", "l2sgd", "averaged-perceptron",
-  "passive-aggressive", "arow"))
+crf_options(
+  method = c("lbfgs", "l2sgd", "averaged-perceptron", "passive-aggressive", "arow")
+)
 }
 \arguments{
 \item{method}{character string with the type of training method. Either one of:
