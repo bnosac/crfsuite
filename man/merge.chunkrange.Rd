@@ -41,7 +41,7 @@ where the token is found in the text of the document, this function allows to as
 of the document.
 }
 \examples{
-\dontrun{
+\donttest{
 library(udpipe)
 udmodel <- udpipe_download_model("dutch-lassysmall")
 if(packageVersion("udpipe") >= "0.7"){

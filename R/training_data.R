@@ -26,7 +26,7 @@
 #' }
 #' @export
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' library(udpipe)
 #' udmodel <- udpipe_download_model("dutch-lassysmall")
 #' if(packageVersion("udpipe") >= "0.7"){

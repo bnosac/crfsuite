@@ -41,7 +41,7 @@ pred <- sample(LETTERS, 1000, replace = TRUE)
 gold <- sample(LETTERS, 1000, replace = TRUE)
 crf_evaluation(pred = pred, obs = gold, labels = LETTERS) 
 
-\dontrun{
+\donttest{
 x <- ner_download_modeldata("conll2002-nl")
 x <- crf_cbind_attributes(x, terms = c("token", "pos"), 
                           by = c("doc_id", "sentence_id"))

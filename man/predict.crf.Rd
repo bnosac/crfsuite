@@ -35,7 +35,7 @@ If \code{type} is 'sequence': a data.frame with columns group and probability co
 Predict the label sequence based on the Conditional Random Field
 }
 \examples{
-\dontrun{
+\donttest{
 library(udpipe)
 data(airbnb_chunks, package = "crfsuite")
 udmodel <- udpipe_download_model("dutch-lassysmall")

@@ -38,7 +38,7 @@
 #'                           from = -1, to = 1, ngram_max = 3)
 #' head(x)
 #' 
-#' \dontrun{
+#' \donttest{
 #' ## Example on some real data
 #' x <- ner_download_modeldata("conll2002-nl")
 #' x <- crf_cbind_attributes(x, terms = c("token", "pos"), 

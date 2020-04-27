@@ -34,7 +34,7 @@
 #' @seealso \code{\link{predict.crf}}
 #' @examples
 #' ## Download modeldata (conll 2002 shared task in Dutch)
-#' \dontrun{
+#' \donttest{
 #' x         <- ner_download_modeldata("conll2002-nl")
 #' }
 #' # for CRAN only - word on a subset of the data
@@ -70,7 +70,7 @@
 #'   if(file.exists(model$file_model)) file.remove(model$file_model)
 #'   if(file.exists("modeldetails.txt")) file.remove("modeldetails.txt")
 #' }
-#' \dontrun{
+#' \donttest{
 #' ##
 #' ## More detailed example where text data was annotated with the webapp in the package
 #' ## This data is joined with a tokenised dataset to construct the training data which
@@ -225,7 +225,7 @@ summary.crf <- function(object, file, ...){
 #' If \code{type} is 'sequence': a data.frame with columns group and probability containing for each sequence group the probability of the sequence.
 #' @seealso \code{\link{crf}}
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' library(udpipe)
 #' data(airbnb_chunks, package = "crfsuite")
 #' udmodel <- udpipe_download_model("dutch-lassysmall")
