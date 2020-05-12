@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.3.2
+
+- Fix the example of merge.chunkrange
+
 # CHANGES IN crfsuite VERSION 0.3.1
 
 - Change the flexdashboard application by adding links to download the annotations

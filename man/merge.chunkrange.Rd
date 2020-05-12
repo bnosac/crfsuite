@@ -49,12 +49,13 @@ if(packageVersion("udpipe") >= "0.7"){
   airbnb_chunks <- head(airbnb_chunks, 20)
   airbnb_tokens <- unique(airbnb_chunks[, c("doc_id", "text")])
 
-  airbnb_tokens <- udpipe(airbnb, object = udmodel)
+  airbnb_tokens <- udpipe(airbnb_tokens, object = udmodel)
   head(airbnb_tokens)
   head(airbnb_chunks)
 
   ## Add the entity of the chunk to the tokenised dataset
   x <- merge(airbnb_chunks, airbnb_tokens)
+  x[, c("doc_id", "token", "chunk_entity")]
   table(x$chunk_entity)
 }
 

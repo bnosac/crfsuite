@@ -1,7 +1,7 @@
 Package: crfsuite
 Type: Package
 Title: Conditional Random Fields for Labelling Sequential Data in Natural Language Processing
-Version: 0.3.1
+Version: 0.3.2
 Maintainer: Jan Wijffels <jwijffels@bnosac.be>
 Authors@R: c(
     person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be', comment = "R wrapper"), 
