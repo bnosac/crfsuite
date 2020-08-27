@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.3.3
+
+- Incorporate CRFsuite commit a2a1547727985e3aff6a35cffe073f57f0223e9d
+
 # CHANGES IN crfsuite VERSION 0.3.2
 
 - Fix the example of merge.chunkrange
