@@ -107,6 +107,7 @@ if(is.data.frame(x)){
 library(udpipe)
 data(airbnb_chunks, package = "crfsuite")
 udmodel       <- udpipe_download_model("dutch-lassysmall")
+if(!udmodel$download_failed){
 udmodel       <- udpipe_load_model(udmodel$file_model)
 airbnb_tokens <- udpipe(x = unique(airbnb_chunks[, c("doc_id", "text")]), 
                         object = udmodel)
@@ -123,6 +124,7 @@ scores <- predict(model,
                   newdata = x[, grep("upos|lemma", colnames(x))], 
                   group = x$doc_id)
 head(scores)
+}
 }
 }
 \references{
