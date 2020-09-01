@@ -128,7 +128,7 @@ head(scores)
 }
 }
 \references{
-More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
+More details about this model is available at \url{http://www.chokkan.org/software/crfsuite/}.
 }
 \seealso{
 \code{\link{predict.crf}}

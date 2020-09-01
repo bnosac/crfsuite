@@ -3,7 +3,7 @@
 #' @param type a character string with the type of data to download. See the function usage for all possible values.
 #' These data will be downloaded from either:
 #' \itemize{
-#'  \item{NLTK-data forked repository: }{\url{https://github.com/bnosac-dev/nltk_data/tree/gh-pages/packages/corpora/conll2002.zip}}
+#'  \item{NLTK-data forked repository: }{\url{https://github.com/bnosac-dev/nltk_data/blob/gh-pages/packages/corpora/conll2002.zip}}
 #'  \item{FOX forked repository of GermanNER: }{\url{https://github.com/bnosac-dev/FOX/tree/master/input/GermanNER}}
 #'  \item{FOX forked repository of WikiNER: }{\url{https://github.com/bnosac-dev/FOX/tree/master/input/Wikiner}}
 #' }

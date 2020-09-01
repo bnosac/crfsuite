@@ -29,7 +29,7 @@
 #'  \item{FUN: }{The argument passed on to FUN}
 #'  \item{ldots: }{A list with the arguments passed on to ...}
 #' } 
-#' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite}.
+#' @references More details about this model is available at \url{http://www.chokkan.org/software/crfsuite/}.
 #' @export
 #' @seealso \code{\link{predict.crf}}
 #' @examples
