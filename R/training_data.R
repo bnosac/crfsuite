@@ -27,6 +27,7 @@
 #' @export
 #' @examples 
 #' \donttest{
+#' \dontshow{if(require(udpipe))\{}
 #' library(udpipe)
 #' udmodel <- udpipe_download_model("dutch-lassysmall")
 #' if(packageVersion("udpipe") >= "0.7"){
@@ -46,6 +47,7 @@
 #' 
 #' ## cleanup for CRAN
 #' file.remove(udmodel$file_model)
+#' \dontshow{\} # End of main if statement running only if the required packages are installed}
 #' }
 merge.chunkrange <- function(x, y, by.x = "doc_id", by.y = "doc_id", default_entity = "O", ...){
   chunk_entity <- doc_id <- misc <- sentence_id <- token <- token_id <- NULL

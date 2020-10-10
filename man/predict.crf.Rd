@@ -36,6 +36,7 @@ Predict the label sequence based on the Conditional Random Field
 }
 \examples{
 \donttest{
+\dontshow{if(require(udpipe))\{}
 library(udpipe)
 data(airbnb_chunks, package = "crfsuite")
 udmodel <- udpipe_download_model("dutch-lassysmall")
@@ -65,6 +66,7 @@ head(scores)
 file.remove(model$file_model)
 file.remove("modeldetails.txt")
 file.remove(udmodel$file)
+\dontshow{\} # End of main if statement running only if the required packages are installed}
 }
 }
 \seealso{

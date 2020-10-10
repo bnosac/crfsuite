@@ -66,7 +66,7 @@ as_2d_table <- function(x, positive){
 #'              "B-ORG", "I-ORG", "B-PER", "I-PER", 
 #'              "B-LOC", "I-LOC", "B-MISC", "I-MISC"))
 #'              
-#'              
+#' \dontshow{if(require(udpipe))\{}         
 #' library(udpipe)
 #' pred <- txt_recode(scores$label, 
 #'                    from = c("B-ORG", "I-ORG", "B-PER", "I-PER", 
@@ -80,6 +80,7 @@ as_2d_table <- function(x, positive){
 #'                          "LOC", "LOC", "MISC", "MISC"))
 #' crf_evaluation(pred = pred, obs = obs, 
 #'                labels = c("ORG", "LOC", "PER", "MISC", "O"))
+#' \dontshow{\} # End of main if statement running only if the required packages are installed}
 #' }
 crf_evaluation <- function(pred, obs, 
                            labels = na.exclude(unique(c(as.character(pred), as.character(obs)))),

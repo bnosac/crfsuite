@@ -104,6 +104,7 @@ if(is.data.frame(x)){
 ## This data is joined with a tokenised dataset to construct the training data which
 ## is further enriched with attributes of upos/lemma in the neighbourhood
 ##
+\dontshow{if(require(udpipe))\{}
 library(udpipe)
 data(airbnb_chunks, package = "crfsuite")
 udmodel       <- udpipe_download_model("dutch-lassysmall")
@@ -125,6 +126,7 @@ scores <- predict(model,
                   group = x$doc_id)
 head(scores)
 }
+\dontshow{\} # End of main if statement running only if the required packages are installed}
 }
 }
 \references{
