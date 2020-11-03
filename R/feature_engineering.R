@@ -115,11 +115,12 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
 #' @title Extract basic text features which are useful for entity recognition
 #' @description Extract basic text features which are useful for entity recognition
 #' @param x a character vector
-#' @param type a character string, which can be one of 'is_capitalised', 'is_url', 'is_email', 'is_number', 'prefix', 'suffix'
+#' @param type a character string, which can be one of 'is_capitalised', 'is_url', 'is_email', 'is_number', 'prefix', 'suffix', 'shape'
 #' @param n for type 'prefix' or 'suffix', the number of characters of the prefix/suffix
 #' @return 
 #' For type 'is_capitalised', 'is_url', 'is_email', 'is_number': a logical vector of the same length as \code{x}, indicating if \code{x} is capitalised, a url, an email or a number\cr
-#' For type 'prefix', 'suffix': a character vector of the same length as \code{x}, containing the prefix or suffix \code{n} number of characters of \code{x}
+#' For type 'prefix', 'suffix': a character vector of the same length as \code{x}, containing the prefix or suffix \code{n} number of characters of \code{x}\cr
+#' For type 'shape': a character vector of the same length as \code{x}, where lowercased elements are replaced with x and uppercased elements with X
 #' @export
 #' @examples 
 #' txt_feature("Red Devils", type = "is_capitalised")
@@ -133,7 +134,9 @@ crf_cbind_attributes_single <- function(data, field, by, from = -2, to = 2, ngra
 #' txt_feature("123abc", type = "is_number")
 #' txt_feature("abcdefghijklmnopqrstuvwxyz", type = "prefix", n = 3)
 #' txt_feature("abcdefghijklmnopqrstuvwxyz", type = "suffix", n = 3)
-txt_feature <- function(x, type = c('is_capitalised', 'is_url', 'is_email', 'is_number', 'prefix', 'suffix'), n = 4){
+#' txt_feature("Red Devils", type = "shape")
+#' txt_feature("red devils", type = "shape")
+txt_feature <- function(x, type = c('is_capitalised', 'is_url', 'is_email', 'is_number', 'prefix', 'suffix', 'shape'), n = 4){
   type <- match.arg(type)
   missing <- is.na(x)
   miss <- as.logical(NA)
@@ -151,6 +154,9 @@ txt_feature <- function(x, type = c('is_capitalised', 'is_url', 'is_email', 'is_
     x_size <- nchar(x)
     start <- x_size - (n - 1)
     result <- substr(x, start = ifelse(start < 1, 1, start), stop = x_size)
+  }else if(type == "shape"){
+    result <- gsub("[[:lower:]]", "x", x)
+    result <- gsub("[[:upper:]]", "X", result)
   }
   result[missing] <- miss
   result

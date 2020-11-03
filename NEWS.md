@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.4
+
+- Add option shape to txt_feature
+
 # CHANGES IN crfsuite VERSION 0.3.3
 
 - Incorporate CRFsuite commit a2a1547727985e3aff6a35cffe073f57f0223e9d
