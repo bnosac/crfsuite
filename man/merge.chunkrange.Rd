@@ -42,6 +42,7 @@ of the document.
 }
 \examples{
 \donttest{
+\dontshow{if(require(udpipe))\{}
 library(udpipe)
 udmodel <- udpipe_download_model("dutch-lassysmall")
 if(packageVersion("udpipe") >= "0.7"){
@@ -61,5 +62,6 @@ if(packageVersion("udpipe") >= "0.7"){
 
 ## cleanup for CRAN
 file.remove(udmodel$file_model)
+\dontshow{\} # End of main if statement running only if the required packages are installed}
 }
 }

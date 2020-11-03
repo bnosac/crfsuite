@@ -63,7 +63,7 @@ crf_evaluation(pred = scores$label, obs = crf_test$label,
              "B-ORG", "I-ORG", "B-PER", "I-PER", 
              "B-LOC", "I-LOC", "B-MISC", "I-MISC"))
              
-             
+\dontshow{if(require(udpipe))\{}         
 library(udpipe)
 pred <- txt_recode(scores$label, 
                    from = c("B-ORG", "I-ORG", "B-PER", "I-PER", 
@@ -77,5 +77,6 @@ obs <- txt_recode(crf_test$label,
                          "LOC", "LOC", "MISC", "MISC"))
 crf_evaluation(pred = pred, obs = obs, 
                labels = c("ORG", "LOC", "PER", "MISC", "O"))
+\dontshow{\} # End of main if statement running only if the required packages are installed}
 }
 }
