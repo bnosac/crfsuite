@@ -1036,3 +1036,108 @@ void crf1dm_dump(crf1dm_t* crf1dm, FILE *fp)
     fprintf(fp, "}\n");
     fprintf(fp, "\n");
 }
+
+SEXP crf1dm_dump_coefficients(crf1dm_t* crf1dm)
+{
+  int size;
+  int j;
+  uint32_t i;
+  feature_refs_t refs;
+  const header_t* hfile = crf1dm->header;
+  // GET LABELS
+  SEXP labels     = PROTECT(NEW_CHARACTER(hfile->num_labels));
+  for (i = 0;i < hfile->num_labels;++i) {
+    const char *str = crf1dm_to_label(crf1dm, i);
+    SET_STRING_ELT(labels, i, mkChar(str));
+  }
+  // GET ATTRIBUTES
+  SEXP attributes = PROTECT(NEW_CHARACTER(hfile->num_attrs));
+  for (i = 0;i < hfile->num_attrs;++i) {
+    const char *str = crf1dm_to_attr(crf1dm, i);
+    SET_STRING_ELT(attributes, i, mkChar(str));
+  }
+  // GET TRANSITIONS
+  size=0;
+  for (i = 0;i < hfile->num_labels;++i) {
+    crf1dm_get_labelref(crf1dm, i, &refs);
+    for (j = 0;j < refs.num_features;++j) {
+      size = size+1;
+    }
+  }
+  SEXP transition_type   = PROTECT(allocVector(INTSXP, size));
+  SEXP transition_from   = PROTECT(NEW_CHARACTER(size));
+  SEXP transition_to     = PROTECT(NEW_CHARACTER(size));
+  SEXP transition_weight = PROTECT(allocVector(REALSXP, size));
+  size=0;
+  for (i = 0;i < hfile->num_labels;++i) {
+    crf1dm_get_labelref(crf1dm, i, &refs);
+    for (j = 0;j < refs.num_features;++j) {
+      crf1dm_feature_t f;
+      int fid = crf1dm_get_featureid(&refs, j);
+      const char *from = NULL, *to = NULL;
+      crf1dm_get_feature(crf1dm, fid, &f);
+      from = crf1dm_to_label(crf1dm, f.src);
+      to = crf1dm_to_label(crf1dm, f.dst);
+      INTEGER(transition_type)[size] = f.type;
+      SET_STRING_ELT(transition_from, size, mkChar(from));
+      SET_STRING_ELT(transition_to, size, mkChar(to));
+      REAL(transition_weight)[size] = f.weight;
+      size = size+1;
+    }
+  }
+  // GET STATES
+  size=0;
+  for (i = 0;i < hfile->num_attrs;++i) {
+    crf1dm_get_attrref(crf1dm, i, &refs);
+    for (j = 0;j < refs.num_features;++j) {
+      size = size+1;
+    }
+  }
+  SEXP state_type   = PROTECT(allocVector(INTSXP, size));
+  SEXP state_from   = PROTECT(NEW_CHARACTER(size));
+  SEXP state_to     = PROTECT(NEW_CHARACTER(size));
+  SEXP state_weight = PROTECT(allocVector(REALSXP, size));
+  size=0;
+  for (i = 0;i < hfile->num_attrs;++i) {
+    crf1dm_get_attrref(crf1dm, i, &refs);
+    for (j = 0;j < refs.num_features;++j) {
+      crf1dm_feature_t f;
+      int fid = crf1dm_get_featureid(&refs, j);
+      const char *attr = NULL, *to = NULL;
+      crf1dm_get_feature(crf1dm, fid, &f);
+      attr = crf1dm_to_attr(crf1dm, f.src);
+      to = crf1dm_to_label(crf1dm, f.dst);
+      INTEGER(state_type)[size] = f.type;
+      SET_STRING_ELT(state_from, size, mkChar(attr));
+      SET_STRING_ELT(state_to, size, mkChar(to));
+      REAL(state_weight)[size] = f.weight;
+      size = size+1;
+    }
+  }
+  
+  const char *names[] = {"labels", "attributes", "transitions", "states", ""};
+  const char *names_transition[] = {"from", "to", "weight", "type", ""};
+  const char *names_states[] = {"attribute", "label", "weight", "type", ""};
+  SEXP res = PROTECT(mkNamed(VECSXP, names));
+  SEXP transitions = PROTECT(mkNamed(VECSXP, names_transition));
+  SEXP states = PROTECT(mkNamed(VECSXP, names_states));
+  SET_VECTOR_ELT(res, 0, labels);
+  SET_VECTOR_ELT(res, 1, attributes);
+  SET_VECTOR_ELT(transitions, 0, transition_from);
+  SET_VECTOR_ELT(transitions, 1, transition_to);
+  SET_VECTOR_ELT(transitions, 2, transition_weight);
+  SET_VECTOR_ELT(transitions, 3, transition_type);
+  SET_VECTOR_ELT(states, 0, state_from);
+  SET_VECTOR_ELT(states, 1, state_to);
+  SET_VECTOR_ELT(states, 2, state_weight);
+  SET_VECTOR_ELT(states, 3, state_type);
+  SET_VECTOR_ELT(res, 2, transitions);
+  SET_VECTOR_ELT(res, 3, states);
+  UNPROTECT(2); // Unprotect SEXP labels and attributes
+  UNPROTECT(4); // Unprotect SEXP transition_type/transition_from/transition_to/transition_weight
+  UNPROTECT(4); // Unprotect SEXP state_type/state_from/state_to/state_weight
+  UNPROTECT(1); // Unprotect SEXP res
+  UNPROTECT(1); // Unprotect SEXP transitions
+  UNPROTECT(1); // Unprotect SEXP states
+  return(res);
+}

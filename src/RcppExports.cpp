@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // crfsuite_copyright
 Rcpp::List crfsuite_copyright();
 RcppExport SEXP _crfsuite_crfsuite_copyright() {
@@ -67,6 +72,17 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// crfsuite_model_coefficients
+Rcpp::List crfsuite_model_coefficients(const char* file_model);
+RcppExport SEXP _crfsuite_crfsuite_model_coefficients(SEXP file_modelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type file_model(file_modelSEXP);
+    rcpp_result_gen = Rcpp::wrap(crfsuite_model_coefficients(file_model));
+    return rcpp_result_gen;
+END_RCPP
+}
 // crfsuite_predict
 Rcpp::List crfsuite_predict(const std::string file_model, const std::vector<int> doc_id, Rcpp::CharacterMatrix x, int trace);
 RcppExport SEXP _crfsuite_crfsuite_predict(SEXP file_modelSEXP, SEXP doc_idSEXP, SEXP xSEXP, SEXP traceSEXP) {
@@ -88,6 +104,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_crfsuite_crfsuite_model_build", (DL_FUNC) &_crfsuite_crfsuite_model_build, 8},
     {"_crfsuite_crfsuite_model", (DL_FUNC) &_crfsuite_crfsuite_model, 1},
     {"_crfsuite_crfsuite_model_dump", (DL_FUNC) &_crfsuite_crfsuite_model_dump, 2},
+    {"_crfsuite_crfsuite_model_coefficients", (DL_FUNC) &_crfsuite_crfsuite_model_coefficients, 1},
     {"_crfsuite_crfsuite_predict", (DL_FUNC) &_crfsuite_crfsuite_predict, 4},
     {NULL, NULL, 0}
 };

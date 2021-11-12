@@ -461,6 +461,12 @@ static int model_dump(crfsuite_model_t* model, FILE *fpo)
     return 0;
 }
 
+SEXP model_dump_coefficients(crfsuite_model_t* model)
+{
+    model_internal_t* internal = (model_internal_t*)model->internal;
+    return crf1dm_dump_coefficients(internal->crf1dm);
+}
+
 static int crf1m_model_create(crf1dm_t *crf1dm, void** ptr_model)
 {
     int ret = 0;
@@ -533,6 +539,7 @@ static int crf1m_model_create(crf1dm_t *crf1dm, void** ptr_model)
     model->get_labels = model_get_labels;
     model->get_tagger = model_get_tagger;
     model->dump = model_dump;
+    model->dump_coefficients = model_dump_coefficients;
 
     *ptr_model = model;
     return 0;

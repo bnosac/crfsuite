@@ -347,6 +347,7 @@ int crf1dm_get_attrref(crf1dm_t* model, int aid, feature_refs_t* ref);
 int crf1dm_get_featureid(feature_refs_t* ref, int i);
 int crf1dm_get_feature(crf1dm_t* model, int fid, crf1dm_feature_t* f);
 void crf1dm_dump(crf1dm_t* model, FILE *fp);
+SEXP crf1dm_dump_coefficients(crf1dm_t* model);
 
 /** @} */
 

@@ -1,5 +1,5 @@
-#include <crfsuite.hpp>
 #include <Rcpp.h>
+#include <crfsuite.hpp>
 
 // [[Rcpp::export]]
 Rcpp::List crfsuite_copyright(){
@@ -151,6 +151,16 @@ void crfsuite_model_dump(const char* file_model, const char* file_txt){
   return;
 }
 
+
+// [[Rcpp::export]]
+Rcpp::List crfsuite_model_coefficients(const char* file_model){
+  crfsuite_model_t *model = NULL;
+  crfsuite_create_instance_from_file(file_model, (void**)&model);
+  SEXP coefficients = model->dump_coefficients(model);
+  Rcpp::List out(coefficients);
+  model->release(model);
+  return out;
+}
 
 // [[Rcpp::export]]
 Rcpp::List crfsuite_predict(const std::string file_model, 

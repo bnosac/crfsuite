@@ -1,6 +1,7 @@
 # CHANGES IN crfsuite VERSION 0.4
 
 - Add option shape to txt_feature
+- Added coefficients.crf to allow to easily extract the coefficients from the model instead of the traditional model dump to disk
 
 # CHANGES IN crfsuite VERSION 0.3.4
 

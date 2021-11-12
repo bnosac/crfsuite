@@ -41,6 +41,10 @@ extern "C" {
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <R.h>
+#include <Rinternals.h>
+#include <Rdefines.h>
+
 /** 
  * \addtogroup crfsuite_api CRFSuite C API
  * @{
@@ -328,6 +332,12 @@ struct tag_crfsuite_model {
      *  @return int         The status code.
      */
     int (*dump)(crfsuite_model_t* model, FILE *fpo);
+    
+    /**
+     * Get the coeffients as an SEXP List
+     *  @param  model       The pointer to this model instance.
+     */
+    SEXP (*dump_coefficients)(crfsuite_model_t* model);
 };
 
 
