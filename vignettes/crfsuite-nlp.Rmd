@@ -83,19 +83,19 @@ As basic feature enrichment we add the parts of speech tag of the preceding and 
 ```{r}
 library(data.table)
 x <- as.data.table(x)
-x <- x[, pos_previous   := shift(pos, n = 1, type = "lag"), by = list(doc_id)]
-x <- x[, pos_next       := shift(pos, n = 1, type = "lead"), by = list(doc_id)]
-x <- x[, token_previous := shift(token, n = 1, type = "lag"), by = list(doc_id)]
+x <- x[, pos_previous   := shift(pos, n = 1, type = "lag"),    by = list(doc_id)]
+x <- x[, pos_next       := shift(pos, n = 1, type = "lead"),   by = list(doc_id)]
+x <- x[, token_previous := shift(token, n = 1, type = "lag"),  by = list(doc_id)]
 x <- x[, token_next     := shift(token, n = 1, type = "lead"), by = list(doc_id)]
 ```
 
 Note that CRFsuite handles all attributes equivalently, in order to distinguish between the columns, we need to prepend the column name logic to each column similar as shown at http://www.chokkan.org/software/crfsuite/tutorial.html. This is done using a custom txt_sprintf function which is similar as sprintf but handles NA values gracefully.
 
 ```{r}
-x <- x[, pos_previous   := txt_sprintf("pos[w-1]=%s", pos_previous), by = list(doc_id)]
-x <- x[, pos_next       := txt_sprintf("pos[w+1]=%s", pos_next), by = list(doc_id)]
+x <- x[, pos_previous   := txt_sprintf("pos[w-1]=%s", pos_previous),     by = list(doc_id)]
+x <- x[, pos_next       := txt_sprintf("pos[w+1]=%s", pos_next),         by = list(doc_id)]
 x <- x[, token_previous := txt_sprintf("token[w-1]=%s", token_previous), by = list(doc_id)]
-x <- x[, token_next     := txt_sprintf("token[w-1]=%s", token_next), by = list(doc_id)]
+x <- x[, token_next     := txt_sprintf("token[w-1]=%s", token_next),     by = list(doc_id)]
 subset(x, doc_id == 100, select = c("doc_id", "token", "token_previous", "token_next"))
 x <- as.data.frame(x)
 ```
@@ -108,7 +108,7 @@ Once you have data which are tagged with your own categories, you can build a CR
 
 ```{r}
 crf_train <- subset(x, data == "ned.train")
-crf_test <- subset(x, data == "testa")
+crf_test  <- subset(x, data == "testa")
 ```
 
 And start building your model. 
@@ -130,6 +130,15 @@ stats <- summary(model)
 plot(stats$iterations$loss, pch = 20, type = "b", 
      main = "Loss evolution", xlab = "Iteration", ylab = "Loss")
 ```
+
+- You can inspect the coefficients (label to label transitions and attribute/label weights) of the model
+
+```{r}
+weights     <- coefficients(model, encoding = "UTF-8")
+head(weights$transitions)
+head(subset(weights$states, label %in% "B-LOC"), n = 10)
+```
+
 
 ### Use the model
 
