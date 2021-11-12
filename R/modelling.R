@@ -180,8 +180,6 @@ print.crf <- function(x, ...){
   cat(sprintf("  size of the model in Mb: %s", round(fsize / (2^20), 2)), sep = "\n")
   cat(sprintf("  number of categories: %s", length(x$labels)), sep = "\n")
   cat(sprintf("  category labels: %s", paste(x$labels, collapse = ", ")), sep = "\n")
-  cat(sprintf("To inspect the model in detail, summary(yourmodel, 'modeldetails.txt') and inspect the modeldetails.txt file", 
-              deparse(substitute(x))), sep = "\n")
 }
 
 
