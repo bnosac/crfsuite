@@ -5,7 +5,7 @@
 \alias{airbnb}
 \title{Dutch reviews of AirBnB customers on Brussels address locations available at www.insideairbnb.com}
 \source{
-\url{http://data.insideairbnb.com/belgium/bru/brussels/2015-10-03/visualisations/reviews.csv}, \url{http://insideairbnb.com/get-the-data.html}
+\url{http://insideairbnb.com/brussels}: information of 2015-10-03
 }
 \description{
 The data contains 500 reviews in Dutch of people who visited an AirBnB appartment in Brussels. \cr

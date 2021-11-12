@@ -165,7 +165,7 @@ ner_download_modeldata <- function(type = c("conll2002-nl", "conll2002-es", "Ger
 #' }
 #' @name airbnb
 #' @docType data
-#' @source \url{http://data.insideairbnb.com/belgium/bru/brussels/2015-10-03/visualisations/reviews.csv}, \url{http://insideairbnb.com/get-the-data.html}
+#' @source \url{http://insideairbnb.com/brussels}: information of 2015-10-03
 #' @seealso \code{\link{airbnb_chunks}}
 #' @examples
 #' data(airbnb)

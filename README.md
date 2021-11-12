@@ -6,7 +6,7 @@ This repository contains an R package which wraps the CRFsuite C/C++ library (ht
 - Use the model to get predictions alongside the model on new data
 - The focus of the implementation is in the area of Natural Language Processing where this R package allows you to easily build and apply models for **named entity recognition, text chunking, part of speech tagging, intent recognition or classification** of any category you have in mind.
 
-For users unfamiliar with Conditional Random Field (CRF) models, you can read this excellent tutorial http://homepages.inf.ed.ac.uk/csutton/publications/crftut-fnt.pdf
+For users unfamiliar with Conditional Random Field (CRF) models, you can read this excellent tutorial https://homepages.inf.ed.ac.uk/csutton/publications/crftut-fnt.pdf
 
 ## Installation
 
