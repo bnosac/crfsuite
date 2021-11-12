@@ -21,3 +21,4 @@ src/liblbfgs/README
 src/liblbfgs/lib/lib.vcxproj
 src/liblbfgs/lib/Makefile.am
 ^.udpipe
+.github
