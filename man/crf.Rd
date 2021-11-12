@@ -88,15 +88,15 @@ if(is.data.frame(x)){
   model
   weights <- coefficients(model)
   head(weights$states, n = 20)
-  head(weights$transitions, n = 5)
+  head(weights$transitions, n = 20)
   stats   <- summary(model, "modeldetails.txt")
   stats
   plot(stats$iterations$loss)
 
   ## Use the CRF model to label a sequence
-  scores  <- predict(model, 
-                     newdata = crf_test[, c("token", "pos")], 
-                     group = crf_test$doc_id)
+  scores <- predict(model, 
+                    newdata = crf_test[, c("token", "pos")], 
+                    group = crf_test$doc_id)
   head(scores)
   crf_test$label <- scores$label
   
@@ -120,17 +120,16 @@ airbnb_tokens <- udpipe(x = unique(airbnb_chunks[, c("doc_id", "text")]),
                         object = udmodel)
 x <- merge(airbnb_chunks, airbnb_tokens)
 x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
-model   <- crf(y = x$chunk_entity, 
-               x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
-               group = x$doc_id, 
-               method = "lbfgs", options = list(max_iterations = 5)) 
-weights <- coefficients(model)
-stats   <- summary(model)
+model <- crf(y = x$chunk_entity, 
+             x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
+             group = x$doc_id, 
+             method = "lbfgs", options = list(max_iterations = 5)) 
+stats <- summary(model)
 stats
 plot(stats$iterations$loss, type = "b", xlab = "Iteration", ylab = "Loss")
-scores  <- predict(model, 
-                   newdata = x[, grep("upos|lemma", colnames(x))], 
-                   group = x$doc_id)
+scores <- predict(model, 
+                  newdata = x[, grep("upos|lemma", colnames(x))], 
+                  group = x$doc_id)
 head(scores)
 }
 \dontshow{\} # End of main if statement running only if the required packages are installed}

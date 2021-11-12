@@ -13,6 +13,7 @@
 #'  \item{arow: }{Adaptive Regularization of Weights (AROW)}
 #' }
 #' @param options a list of options to provide to the training algorithm. See \code{\link{crf_options}} for possible options and the example below on how to provide them.
+#' @param embeddings a matrix with the same number of rows as \code{x} and in the same order with numeric information used in model building (experimental)
 #' @param file a character string with the path to the file on disk where the CRF model will be stored.
 #' @param trace a logical indicating to show the trace of the training output. Defaults to \code{FALSE}.
 #' @param FUN a function which can be applied on raw text in order to obtain the attribute matrix used in \code{predict.crf}. Currently not used yet.
@@ -232,6 +233,7 @@ summary.crf <- function(object, file, ...){
 #' @param object an object of class crf as returned by \code{\link{crf}}
 #' @param newdata a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix. 
 #' This data should be provided in the same format as was used for training the model
+#' @param embeddings a matrix with the same number of rows as \code{x} and in the same order with numeric information used to predict
 #' @param group an integer or character vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier) 
 #' @param type either 'marginal' or 'sequence' to get predictions at the level of \code{newdata} or a the level of the sequence \code{group}. Defaults to \code{'marginal'}
 #' @param trace a logical indicating to show the trace of the labelling output. Defaults to \code{FALSE}.

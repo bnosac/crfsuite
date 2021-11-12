@@ -7,8 +7,8 @@
 \method{predict}{crf}(
   object,
   newdata,
-  group,
   embeddings,
+  group,
   type = c("marginal", "sequence"),
   trace = FALSE,
   ...
@@ -20,9 +20,9 @@
 \item{newdata}{a character matrix of data containing attributes about the label sequence \code{y} or an object which can be coerced to a character matrix. 
 This data should be provided in the same format as was used for training the model}
 
-\item{group}{an integer or character vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
-
 \item{embeddings}{a matrix with the same number of rows as \code{x} and in the same order with numeric information used to predict}
+
+\item{group}{an integer or character vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
 
 \item{type}{either 'marginal' or 'sequence' to get predictions at the level of \code{newdata} or a the level of the sequence \code{group}. Defaults to \code{'marginal'}}
 
