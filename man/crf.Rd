@@ -10,6 +10,7 @@ crf(
   group,
   method = c("lbfgs", "l2sgd", "averaged-perceptron", "passive-aggressive", "arow"),
   options = crf_options(method)$default,
+  embeddings,
   file = "annotator.crfsuite",
   trace = FALSE,
   FUN = identity,
@@ -34,6 +35,8 @@ It is important to note that an attribute which has the same value in a differen
 }}
 
 \item{options}{a list of options to provide to the training algorithm. See \code{\link{crf_options}} for possible options and the example below on how to provide them.}
+
+\item{embeddings}{a matrix with the same number of rows as \code{x} and in the same order with numeric information used in model building (experimental)}
 
 \item{file}{a character string with the path to the file on disk where the CRF model will be stored.}
 
@@ -83,14 +86,17 @@ if(is.data.frame(x)){
                options = list(max_iterations = 3, feature.minfreq = 5, 
                               c1 = 0, c2 = 1)) 
   model
-  stats <- summary(model, "modeldetails.txt")
+  weights <- coefficients(model)
+  head(weights$states, n = 20)
+  head(weights$transitions, n = 5)
+  stats   <- summary(model, "modeldetails.txt")
   stats
   plot(stats$iterations$loss)
 
   ## Use the CRF model to label a sequence
-  scores <- predict(model, 
-                    newdata = crf_test[, c("token", "pos")], 
-                    group = crf_test$doc_id)
+  scores  <- predict(model, 
+                     newdata = crf_test[, c("token", "pos")], 
+                     group = crf_test$doc_id)
   head(scores)
   crf_test$label <- scores$label
   
@@ -114,16 +120,17 @@ airbnb_tokens <- udpipe(x = unique(airbnb_chunks[, c("doc_id", "text")]),
                         object = udmodel)
 x <- merge(airbnb_chunks, airbnb_tokens)
 x <- crf_cbind_attributes(x, terms = c("upos", "lemma"), by = "doc_id")
-model <- crf(y = x$chunk_entity, 
-             x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
-             group = x$doc_id, 
-             method = "lbfgs", options = list(max_iterations = 5)) 
-stats <- summary(model)
+model   <- crf(y = x$chunk_entity, 
+               x = x[, grep("upos|lemma", colnames(x), value = TRUE)], 
+               group = x$doc_id, 
+               method = "lbfgs", options = list(max_iterations = 5)) 
+weights <- coefficients(model)
+stats   <- summary(model)
 stats
 plot(stats$iterations$loss, type = "b", xlab = "Iteration", ylab = "Loss")
-scores <- predict(model, 
-                  newdata = x[, grep("upos|lemma", colnames(x))], 
-                  group = x$doc_id)
+scores  <- predict(model, 
+                   newdata = x[, grep("upos|lemma", colnames(x))], 
+                   group = x$doc_id)
 head(scores)
 }
 \dontshow{\} # End of main if statement running only if the required packages are installed}

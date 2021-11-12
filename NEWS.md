@@ -2,6 +2,7 @@
 
 - Add option shape to txt_feature
 - Added coefficients.crf to allow to easily extract the coefficients from the model instead of the traditional model dump to disk
+- Allow to pass embedding matrix when training and predicting
 
 # CHANGES IN crfsuite VERSION 0.3.4
 

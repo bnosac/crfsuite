@@ -8,6 +8,7 @@
   object,
   newdata,
   group,
+  embeddings,
   type = c("marginal", "sequence"),
   trace = FALSE,
   ...
@@ -20,6 +21,8 @@
 This data should be provided in the same format as was used for training the model}
 
 \item{group}{an integer or character vector of the same length as nrow \code{newdata} indicating the group the sequence \code{y} belongs to (e.g. a document or sentence identifier)}
+
+\item{embeddings}{a matrix with the same number of rows as \code{x} and in the same order with numeric information used to predict}
 
 \item{type}{either 'marginal' or 'sequence' to get predictions at the level of \code{newdata} or a the level of the sequence \code{group}. Defaults to \code{'marginal'}}
 

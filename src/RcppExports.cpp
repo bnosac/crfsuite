@@ -33,8 +33,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // crfsuite_model_build
-Rcpp::List crfsuite_model_build(const char* file_model, const std::vector<int> doc_id, const std::vector<std::string> y, Rcpp::CharacterMatrix x, Rcpp::List options, const std::string method, const std::string type, int trace);
-RcppExport SEXP _crfsuite_crfsuite_model_build(SEXP file_modelSEXP, SEXP doc_idSEXP, SEXP ySEXP, SEXP xSEXP, SEXP optionsSEXP, SEXP methodSEXP, SEXP typeSEXP, SEXP traceSEXP) {
+Rcpp::List crfsuite_model_build(const char* file_model, const std::vector<int> doc_id, const std::vector<std::string> y, Rcpp::CharacterMatrix x, Rcpp::NumericMatrix embeddings, Rcpp::List options, const std::string method, const std::string type, int trace);
+RcppExport SEXP _crfsuite_crfsuite_model_build(SEXP file_modelSEXP, SEXP doc_idSEXP, SEXP ySEXP, SEXP xSEXP, SEXP embeddingsSEXP, SEXP optionsSEXP, SEXP methodSEXP, SEXP typeSEXP, SEXP traceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -42,11 +42,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::vector<int> >::type doc_id(doc_idSEXP);
     Rcpp::traits::input_parameter< const std::vector<std::string> >::type y(ySEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type embeddings(embeddingsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type options(optionsSEXP);
     Rcpp::traits::input_parameter< const std::string >::type method(methodSEXP);
     Rcpp::traits::input_parameter< const std::string >::type type(typeSEXP);
     Rcpp::traits::input_parameter< int >::type trace(traceSEXP);
-    rcpp_result_gen = Rcpp::wrap(crfsuite_model_build(file_model, doc_id, y, x, options, method, type, trace));
+    rcpp_result_gen = Rcpp::wrap(crfsuite_model_build(file_model, doc_id, y, x, embeddings, options, method, type, trace));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -84,16 +85,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // crfsuite_predict
-Rcpp::List crfsuite_predict(const std::string file_model, const std::vector<int> doc_id, Rcpp::CharacterMatrix x, int trace);
-RcppExport SEXP _crfsuite_crfsuite_predict(SEXP file_modelSEXP, SEXP doc_idSEXP, SEXP xSEXP, SEXP traceSEXP) {
+Rcpp::List crfsuite_predict(const std::string file_model, const std::vector<int> doc_id, Rcpp::CharacterMatrix x, Rcpp::NumericMatrix embeddings, int trace);
+RcppExport SEXP _crfsuite_crfsuite_predict(SEXP file_modelSEXP, SEXP doc_idSEXP, SEXP xSEXP, SEXP embeddingsSEXP, SEXP traceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::string >::type file_model(file_modelSEXP);
     Rcpp::traits::input_parameter< const std::vector<int> >::type doc_id(doc_idSEXP);
     Rcpp::traits::input_parameter< Rcpp::CharacterMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type embeddings(embeddingsSEXP);
     Rcpp::traits::input_parameter< int >::type trace(traceSEXP);
-    rcpp_result_gen = Rcpp::wrap(crfsuite_predict(file_model, doc_id, x, trace));
+    rcpp_result_gen = Rcpp::wrap(crfsuite_predict(file_model, doc_id, x, embeddings, trace));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -101,11 +103,11 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_crfsuite_crfsuite_copyright", (DL_FUNC) &_crfsuite_crfsuite_copyright, 0},
     {"_crfsuite_crfsuite_model_parameters", (DL_FUNC) &_crfsuite_crfsuite_model_parameters, 2},
-    {"_crfsuite_crfsuite_model_build", (DL_FUNC) &_crfsuite_crfsuite_model_build, 8},
+    {"_crfsuite_crfsuite_model_build", (DL_FUNC) &_crfsuite_crfsuite_model_build, 9},
     {"_crfsuite_crfsuite_model", (DL_FUNC) &_crfsuite_crfsuite_model, 1},
     {"_crfsuite_crfsuite_model_dump", (DL_FUNC) &_crfsuite_crfsuite_model_dump, 2},
     {"_crfsuite_crfsuite_model_coefficients", (DL_FUNC) &_crfsuite_crfsuite_model_coefficients, 1},
-    {"_crfsuite_crfsuite_predict", (DL_FUNC) &_crfsuite_crfsuite_predict, 4},
+    {"_crfsuite_crfsuite_predict", (DL_FUNC) &_crfsuite_crfsuite_predict, 5},
     {NULL, NULL, 0}
 };
 
