@@ -249,7 +249,7 @@ static int params_help(crfsuite_params_t* params, const char *name, char **ptr_t
     return 0;
 }
 
-crfsuite_params_t* params_create_instance()
+crfsuite_params_t* params_create_instance(void)
 {
     crfsuite_params_t* params = (crfsuite_params_t*)calloc(1, sizeof(crfsuite_params_t));
 

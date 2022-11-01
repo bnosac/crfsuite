@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.4.1
+
+- fixes for R CMD check warning 'a function declaration without a prototype is deprecated in all versions of C [-Wstrict-prototypes]'
+
 # CHANGES IN crfsuite VERSION 0.4
 
 - Add option shape to txt_feature

@@ -69,7 +69,7 @@ static int delcb(RUMAVL *tree, RUMAVL_NODE *n, void *_record, void *udata)
     return 0;
 }
 
-quark_t* quark_new()
+quark_t* quark_new(void)
 {
     quark_t* qrk = (quark_t*)malloc(sizeof(quark_t));
     if (qrk != NULL) {

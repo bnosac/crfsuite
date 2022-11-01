@@ -36,7 +36,7 @@
 struct tag_quark;
 typedef struct tag_quark quark_t;
 
-quark_t* quark_new();
+quark_t* quark_new(void);
 void quark_delete(quark_t* qrk);
 int quark_get(quark_t* qrk, const char *str);
 int quark_to_id(quark_t* qrk, const char *str);

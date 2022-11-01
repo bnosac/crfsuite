@@ -33,7 +33,7 @@
 #ifndef    __PARAMS_H__
 #define    __PARAMS_H__
 
-crfsuite_params_t* params_create_instance();
+crfsuite_params_t* params_create_instance(void);
 int params_add_int(crfsuite_params_t* params, const char *name, int value, const char *help);
 int params_add_float(crfsuite_params_t* params, const char *name, floatval_t value, const char *help);
 int params_add_string(crfsuite_params_t* params, const char *name, const char *value, const char *help);

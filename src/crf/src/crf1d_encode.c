@@ -1028,7 +1028,7 @@ static void encoder_release(encoder_t *self)
     free(self);
 }
 
-encoder_t *crf1d_create_encoder()
+encoder_t *crf1d_create_encoder(void)
 {
     encoder_t *self = (encoder_t*)calloc(1, sizeof(encoder_t));
     if (self != NULL) {

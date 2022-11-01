@@ -74,7 +74,7 @@ static int featureset_comp(const void *x, const void *y, size_t n, void *udata)
     return ret;
 }
 
-static featureset_t* featureset_new()
+static featureset_t* featureset_new(void)
 {
     featureset_t* set = NULL;
     set = (featureset_t*)calloc(1, sizeof(featureset_t));

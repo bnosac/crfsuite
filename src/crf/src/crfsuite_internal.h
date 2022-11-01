@@ -166,7 +166,7 @@ struct tag_encoder
  */
 /** @{ */
 
-encoder_t *crf1d_create_encoder();
+encoder_t *crf1d_create_encoder(void);
 
 /** @} */
 
