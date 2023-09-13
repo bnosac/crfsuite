@@ -1,4 +1,3 @@
-CXX_STD      = CXX11
 PKG_CPPFLAGS = -I./cqdb/include -I./crf/src -I./liblbfgs/include -I./include
 
 SOURCES = cqdb/src/cqdb.c cqdb/src/lookup3.c  \

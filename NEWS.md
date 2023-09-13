@@ -1,3 +1,7 @@
+# CHANGES IN crfsuite VERSION 0.4.2
+
+- Drop C++11 specification in Makevars
+
 # CHANGES IN crfsuite VERSION 0.4.1
 
 - fixes for R CMD check warning 'a function declaration without a prototype is deprecated in all versions of C [-Wstrict-prototypes]'
