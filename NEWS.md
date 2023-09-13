@@ -1,6 +1,7 @@
 # CHANGES IN crfsuite VERSION 0.4.2
 
 - Drop C++11 specification in Makevars
+- Remove CITATION file
 
 # CHANGES IN crfsuite VERSION 0.4.1
 
