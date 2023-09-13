@@ -89,7 +89,7 @@ enum {
     /** Overflow. */
     CRFSUITEERR_OVERFLOW,
     /** Not implemented. */
-    CRFSUITEERR_NOTIMPLEMENTED,
+    CRFSUITEERR_NOTIMPLEMENTED
 };
 
 /**@}*/

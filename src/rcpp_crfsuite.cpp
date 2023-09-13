@@ -79,7 +79,7 @@ Rcpp::List crfsuite_model_build(const char* file_model,
     group_end = rowidx - 1;
     int nterms_in_document = group_end - group_start + 1;
     if(trace > 1) Rcpp::Rcout << "Creating CRFsuite data for doc_id " << previous_group << " containing " << nterms_in_document << " items: " << group_start+1 << "-" << group_end+1 << " \n";
-    std::vector<std::vector<CRFSuite::Attribute>> termsequenceattributes;
+    std::vector<std::vector<CRFSuite::Attribute> > termsequenceattributes;
     std::vector<std::string> labels;
     for(int i=group_start; i<=group_end; i++) { 
       std::vector<CRFSuite::Attribute> termfeatures;
@@ -206,7 +206,7 @@ Rcpp::List crfsuite_predict(const std::string file_model,
     group_end = rowidx - 1;
     int nterms_in_document = group_end - group_start + 1;
     if(trace > 1) Rcpp::Rcout << "Creating CRFsuite data for doc_id " << previous_group << " containing " << nterms_in_document << " items: " << group_start+1 << "-" << group_end+1 << " \n";
-    std::vector<std::vector<CRFSuite::Attribute>> termsequenceattributes;
+    std::vector<std::vector<CRFSuite::Attribute> > termsequenceattributes;
     for(int i=group_start; i<=group_end; i++) { 
       std::vector<CRFSuite::Attribute> termfeatures;
       for(int j=0; j<nfeatures; j++) {  

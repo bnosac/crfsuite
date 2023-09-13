@@ -2,6 +2,7 @@
 
 - Drop C++11 specification in Makevars
 - Remove CITATION file
+- Minor cosmetic changes to remove some Pedantic compiler messages in rcpp_crfsuite.cpp and crfsuite.h
 
 # CHANGES IN crfsuite VERSION 0.4.1
 
