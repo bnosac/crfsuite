@@ -1105,5 +1105,17 @@ static void *mem_mgr (RUMAVL *tree, void *ptr, size_t size)
     if (tree->alloc != NULL)
 	return tree->alloc(ptr, size, tree->udata);
  
-    return realloc(ptr, size);
+    //return realloc(ptr, size);
+    /* FIX CRAN warning START
+     The valgrind 'additional issue' checks are now being done with Fedora 38 
+     and its valgrind 3.21.0.  This is flagging 'realloc with size 0' in packages
+     */
+    if (size <= 0) {
+       free(ptr);
+       ptr = NULL;
+       return(ptr);
+    }else {
+      return realloc(ptr, size);
+    }
+    /* FIX CRAN warning END */
 }
