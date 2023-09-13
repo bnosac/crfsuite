@@ -3,6 +3,7 @@
 - Drop C++11 specification in Makevars
 - Remove CITATION file
 - Minor cosmetic changes to remove some Pedantic compiler messages in rcpp_crfsuite.cpp and crfsuite.h
+- Comment out rumavl_strerror in rumavl.h as the function is not used and in order to avoid 'warning: function declaration isn't a prototype [-Wstrict-prototypes]' 
 
 # CHANGES IN crfsuite VERSION 0.4.1
 

@@ -151,7 +151,9 @@ void *(**rumavl_alloc(RUMAVL *tree))(void *ptr, size_t size, void *udata);
 #define RUMAVL_ERR_EXIST  (-6)	/* Entry already exists */
 
 /* returns static string describing error number */
+/*
 extern const char *rumavl_strerror (int errno);
+ */
 
 #ifdef __cplusplus
 }

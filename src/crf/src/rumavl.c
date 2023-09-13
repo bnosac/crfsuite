@@ -741,6 +741,7 @@ extern int rumavl_foreach (RUMAVL *tree, int dir,
 /*----------------------------------------------------------------------------
  * rumavl_strerror - return string description of RumAVL error code
  *--------------------------------------------------------------------------*/
+/*
 const char *rumavl_strerror (int errno)
 {
     switch (errno){
@@ -759,7 +760,7 @@ const char *rumavl_strerror (int errno)
     }
     return "UNKNOWN ERROR";
 }
-
+*/
 
 
 
