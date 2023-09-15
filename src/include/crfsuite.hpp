@@ -207,6 +207,7 @@ StringList Trainer::params()
         pars.push_back(name);
         params->free(params, name);
     }
+    params->release(params);
     return pars;
 }
 
