@@ -5,6 +5,7 @@
 - Minor cosmetic changes to remove some Pedantic compiler messages in rcpp_crfsuite.cpp and crfsuite.h
 - Comment out rumavl_strerror in rumavl.h as the function is not used and in order to avoid 'warning: function declaration isn't a prototype [-Wstrict-prototypes]' 
 - Fix in mem_mgr of ramvl.c caused by update of valgrind 3.21.0 which is now flagging 'realloc with size 0' in packages
+- Fix memory leak when extracting the hyperparameters from the model with Trainer::params in crfsuite.hpp
 
 # CHANGES IN crfsuite VERSION 0.4.1
 
