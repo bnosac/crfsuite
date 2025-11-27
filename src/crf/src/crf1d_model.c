@@ -497,7 +497,7 @@ int crf1dmw_put_labelref(crf1dmw_t* writer, int lid, const feature_refs_t* ref, 
     }
 
     /* Validate lid is within bounds */
-    if (lid < 0 || lid >= writer->num_labels) {  // Add num_labels check
+    if (lid < 0 || (uint32_t)lid >= href->num) {
         return CRFSUITEERR_INTERNAL_LOGIC;
     }
 
